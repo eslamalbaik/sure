@@ -19,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'arabic': ['Cairo', 'system-ui', '-apple-system', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -26,7 +29,7 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: '#47286c',
+					DEFAULT: '#1a365d',
 					foreground: '#ffffff'
 				},
 				secondary: {
@@ -42,8 +45,8 @@ export default {
 					foreground: 'hsl(var(--muted-foreground))'
 				},
 				accent: {
-					DEFAULT: '#d0a63a',
-					foreground: '#ffffff'
+					DEFAULT: '#f7b731',
+					foreground: '#1a365d'
 				},
 				popover: {
 					DEFAULT: 'hsl(var(--popover))',
@@ -62,9 +65,7 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				gold: '#d0a63a',
-				purple: '#47286c'
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

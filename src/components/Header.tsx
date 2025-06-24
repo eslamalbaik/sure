@@ -1,7 +1,6 @@
 
 import { useState } from 'react';
 import { Menu, X, Phone, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,56 +14,56 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50">
+    <header className="bg-white shadow-lg sticky top-0 z-50" dir="rtl">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-purple">Dr. Abdullah Al-Subaie</h1>
+        <div className="flex items-center justify-between h-20">
+          <div className="flex items-center space-x-4 space-x-reverse">
+            <h1 className="text-2xl font-bold text-[#1a365d]">د. عبدالله الصبيعي</h1>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-8 space-x-reverse">
             <button 
               onClick={() => scrollToSection('home')}
-              className="text-gray-700 hover:text-purple transition-colors"
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-              Home
+              الرئيسية
             </button>
             <button 
               onClick={() => scrollToSection('about')}
-              className="text-gray-700 hover:text-purple transition-colors"
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-              About
+              نبذة
             </button>
             <button 
               onClick={() => scrollToSection('services')}
-              className="text-gray-700 hover:text-purple transition-colors"
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-              Services
+              الخدمات
             </button>
             <button 
               onClick={() => scrollToSection('consultation')}
-              className="text-gray-700 hover:text-purple transition-colors"
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-              Consultation
+              الاستشارات
             </button>
             <button 
               onClick={() => scrollToSection('contact')}
-              className="text-gray-700 hover:text-purple transition-colors"
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-              Contact
+              التواصل
             </button>
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Phone className="w-4 h-4" />
+          <div className="hidden lg:flex items-center space-x-4 space-x-reverse">
+            <div className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600">
               <span>+966 50 123 4567</span>
+              <Phone className="w-4 h-4" />
             </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Mail className="w-4 h-4" />
+            <div className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600">
               <span>info@subaieconsult.com</span>
+              <Mail className="w-4 h-4" />
             </div>
           </div>
 
@@ -83,33 +82,33 @@ const Header = () => {
             <nav className="flex flex-col space-y-2">
               <button 
                 onClick={() => scrollToSection('home')}
-                className="text-left px-4 py-2 text-gray-700 hover:text-purple transition-colors"
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
-                Home
+                الرئيسية
               </button>
               <button 
                 onClick={() => scrollToSection('about')}
-                className="text-left px-4 py-2 text-gray-700 hover:text-purple transition-colors"
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
-                About
+                نبذة
               </button>
               <button 
                 onClick={() => scrollToSection('services')}
-                className="text-left px-4 py-2 text-gray-700 hover:text-purple transition-colors"
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
-                Services
+                الخدمات
               </button>
               <button 
                 onClick={() => scrollToSection('consultation')}
-                className="text-left px-4 py-2 text-gray-700 hover:text-purple transition-colors"
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
-                Consultation
+                الاستشارات
               </button>
               <button 
                 onClick={() => scrollToSection('contact')}
-                className="text-left px-4 py-2 text-gray-700 hover:text-purple transition-colors"
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
-                Contact
+                التواصل
               </button>
             </nav>
           </div>
