@@ -48,6 +48,18 @@ const Header = () => {
               الاستشارات
             </button>
             <button 
+              onClick={() => scrollToSection('faq')}
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
+            >
+              الأسئلة الشائعة
+            </button>
+            <button 
+              onClick={() => scrollToSection('blog')}
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
+            >
+              المدونة
+            </button>
+            <button 
               onClick={() => scrollToSection('contact')}
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
@@ -103,6 +115,18 @@ const Header = () => {
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                 الاستشارات
+              </button>
+              <button 
+                onClick={() => scrollToSection('faq')}
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
+              >
+                الأسئلة الشائعة
+              </button>
+              <button 
+                onClick={() => scrollToSection('blog')}
+                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
+              >
+                المدونة
               </button>
               <button 
                 onClick={() => scrollToSection('contact')}
