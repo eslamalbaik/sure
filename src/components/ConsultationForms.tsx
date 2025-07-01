@@ -1,198 +1,267 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+import { useState } from 'react';
+import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useState } from 'react';
-import { UserPlus, Users } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 
-const ConsultationForms = () => {
+const ConsultationFroms = () => {
+  const { toast } = useToast();
   const [existingClientForm, setExistingClientForm] = useState({
     name: '',
     fileNumber: '',
     mobile: '',
-    question: ''
+    question: '',
+    lastVisit: "", // أضفت هذا السطر
+
   });
 
   const [newClientForm, setNewClientForm] = useState({
     name: '',
     mobile: '',
+    company: '',
+    industry: '',
     question: ''
   });
 
   const handleExistingClientSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Existing client form:', existingClientForm);
-    // Handle form submission
+    console.log('Existing client consultation:', existingClientForm);
+    toast({
+      title: "تم إرسال الاستشارة بنجاح",
+      description: "سيتم التواصل معك في أقرب وقت ممكن"
+    });
+    setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '' });
   };
 
   const handleNewClientSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('New client form:', newClientForm);
-    // Handle form submission
+    console.log('New client consultation:', newClientForm);
+    toast({
+      title: "تم إرسال الاستشارة بنجاح",
+      description: "سيتم التواصل معك في أقرب وقت ممكن"
+    });
+    setNewClientForm({ name: '', mobile: '', company: '', industry: '', question: '' });
   };
 
   return (
-    <section id="consultation" className="py-20 bg-gray-50" dir="rtl">
+    <section id="consultation" className="py-20 bg-gradient-to-br from-gray-50 to-white">
       <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#1a365d] mb-4">نماذج الاستشارة</h2>
+            <h2 className="text-4xl md:text-4xl font-bold text-[#1a365d] mb-6">
+              استشارة مجانية
+            </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              اختر النموذج المناسب لحالتك - عميل حالي أو عميل جديد
+              احصل على استشارة مجانية من د. عبدالله السبيعي، المتخصص في الطب النفسي.
             </p>
+            <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
+
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Existing Client Form */}
-            <Card className="shadow-2xl border-0 bg-white">
-              <CardHeader className="bg-gradient-to-r from-[#1a365d] to-[#2d3748] text-white rounded-t-lg">
-                <CardTitle className="flex items-center gap-3 text-2xl">
-                  <Users className="w-8 h-8 text-[#f7b731]" />
-                  عميل حالي
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <form onSubmit={handleExistingClientSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="existing-name" className="text-[#1a365d] font-bold text-lg">الاسم</Label>
-                    <Input
-                      id="existing-name"
-                      type="text"
-                      value={existingClientForm.name}
-                      onChange={(e) => setExistingClientForm({...existingClientForm, name: e.target.value})}
-                      className="mt-2 border-2 border-gray-200 focus:border-[#1a365d] rounded-lg p-3 text-lg"
-                      required
-                    />
+          <Tabs dir="rtl" defaultValue="existing" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-2xl">
+              <TabsTrigger value="existing" className="flex items-center gap-2 rounded-xl transition-all">
+                <FileSearch className="w-4 h-4" />
+                قسم الإستشارات الطبية
+              </TabsTrigger>
+              <TabsTrigger value="new" className="flex items-center gap-2 rounded-xl transition-all">
+                <UserPlus className="w-4 h-4" />
+                قسم الإستشارات الشخصية
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="existing">
+              <Card dir="rtl" className="shadow-2xl  border-0 rounded-3xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-[#1a365d] to-purple-600 text-white p-8">
+                  <div className="flex items-center gap-4 ">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                      <FileText className="w-8 h-8" />
+                    </div>
+                    <div className=''>
+                      <CardTitle className="text-3xl  font-bold">استشارة للمراجعين الحاليين</CardTitle>
+                      <CardDescription className="text-white/90 text-lg">
+                        خاصة بمراجعي البروفيسور  عبدالله السبيعي بمركز  للإستشارات الطبية
+                      </CardDescription>
+                    </div>
                   </div>
-                  
-                  <div>
-                    <Label htmlFor="file-number" className="text-[#1a365d] font-bold text-lg">رقم الملف</Label>
-                    <Input
-                      id="file-number"
-                      type="text"
-                      value={existingClientForm.fileNumber}
-                      onChange={(e) => setExistingClientForm({...existingClientForm, fileNumber: e.target.value})}
-                      className="mt-2 border-2 border-gray-200 focus:border-[#1a365d] rounded-lg p-3 text-lg"
-                      required
-                    />
+                </CardHeader>
+                <CardContent className="p-8">
+                  <form onSubmit={handleExistingClientSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <Label htmlFor="existing-name" className="text-lg font-semibold text-[#1a365d]">
+                          الاسم الكامل
+                        </Label>
+                        <Input
+                          id="existing-name"
+                          type="text"
+                          value={existingClientForm.name}
+                          onChange={(e) => setExistingClientForm({ ...existingClientForm, name: e.target.value })}
+                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                          placeholder="أدخل اسمك الكامل"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="file-number" className="text-lg font-semibold text-[#1a365d]">
+                          رقم الملف
+                        </Label>
+                        <Input
+                          id="file-number"
+                          type="text"
+                          value={existingClientForm.fileNumber}
+                          onChange={(e) => setExistingClientForm({ ...existingClientForm, fileNumber: e.target.value })}
+                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                          placeholder="أدخل رقم الملف الاستشاري"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="last-visit" className="text-lg font-semibold text-[#1a365d]">
+                        تاريخ آخر زيارة
+                      </Label>
+                      <Input
+                        id="last-visit"
+                        type="date"
+                        value={existingClientForm.lastVisit}
+                        onChange={(e) => setExistingClientForm({ ...existingClientForm, lastVisit: e.target.value })}
+                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="existing-mobile" className="text-lg font-semibold text-[#1a365d]">
+                        رقم الجوال
+                      </Label>
+                      <Input
+                        id="existing-mobile"
+                        type="tel"
+                        value={existingClientForm.mobile}
+                        onChange={(e) => setExistingClientForm({ ...existingClientForm, mobile: e.target.value })}
+                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                        placeholder="+966920007731"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="existing-question" className="text-lg font-semibold text-[#1a365d]">
+                        الاستشارة أو السؤال
+                      </Label>
+                      <Textarea
+                        id="existing-question"
+                        value={existingClientForm.question}
+                        onChange={(e) => setExistingClientForm({ ...existingClientForm, question: e.target.value })}
+                        className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                        placeholder="اكتب استشارتك أو سؤالك هنا (مقيدة بـ 4-5 أسطر)"
+                        maxLength={500}
+                        required
+                      />
+                      <p className="text-sm text-gray-500 mt-2 text-right">
+                        الحد الأقصى: 500 حرف
+                      </p>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full bg-[#1a365d] hover:bg-[#1a365d]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <Send className="w-6 h-6 mr-3" />
+                      إرسال الاستشارة
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="new">
+              <Card className="shadow-2xl border-0 rounded-3xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-[#f7b731] to-orange-500 text-white p-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                      <UserPlus className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-3xl font-bold">قسم  الإستشارات الشخصية</CardTitle>
+                      <CardDescription className="text-white/90 text-lg">
+                        للعملاء الجدد الذين لا يملكون ملف استشاري
+                      </CardDescription>
+                    </div>
                   </div>
+                </CardHeader>
+                <CardContent className="p-8">
+                  <form onSubmit={handleNewClientSubmit} className="space-y-6">
+                      <div>
+                        <Label htmlFor="new-name" className="text-lg font-semibold text-[#1a365d]">
+                          الاسم الكامل
+                        </Label>
+                        <Input
+                          id="new-name"
+                          type="text"
+                          value={newClientForm.name}
+                          onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
+                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                          placeholder="أدخل اسمك الكامل"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="new-mobile" className="text-lg font-semibold text-[#1a365d]">
+                          رقم الجوال
+                        </Label>
+                        <Input
+                          id="new-mobile"
+                          type="tel"
+                          value={newClientForm.mobile}
+                          onChange={(e) => setNewClientForm({ ...newClientForm, mobile: e.target.value })}
+                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                          placeholder="+966920007731"
+                          required
+                        />
+                      </div>
 
-                  <div>
-                    <Label htmlFor="existing-mobile" className="text-[#1a365d] font-bold text-lg">رقم الجوال</Label>
-                    <Input
-                      id="existing-mobile"
-                      type="tel"
-                      value={existingClientForm.mobile}
-                      onChange={(e) => setExistingClientForm({...existingClientForm, mobile: e.target.value})}
-                      className="mt-2 border-2 border-gray-200 focus:border-[#1a365d] rounded-lg p-3 text-lg"
-                      required
-                    />
-                  </div>
+                    <div>
+                      <Label htmlFor="new-question" className="text-lg font-semibold text-[#1a365d]">
+                        الاستشارة أو السؤال
+                      </Label>
+                      <Textarea
+                        id="new-question"
+                        value={newClientForm.question}
+                        onChange={(e) => setNewClientForm({ ...newClientForm, question: e.target.value })}
+                        className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                        placeholder="اكتب استشارتك أو سؤالك هنا بالتفصيل"
+                        maxLength={800}
+                        required
+                      />
+                      <p className="text-sm text-gray-500 mt-2 text-right">
+                        الحد الأقصى: 800 حرف
+                      </p>
+                    </div>
 
-                  <div>
-                    <Label htmlFor="existing-question" className="text-[#1a365d] font-bold text-lg">السؤال</Label>
-                    <textarea
-                      id="existing-question"
-                      value={existingClientForm.question}
-                      onChange={(e) => setExistingClientForm({...existingClientForm, question: e.target.value.slice(0, 500)})}
-                      className="mt-2 w-full border-2 border-gray-200 focus:border-[#1a365d] rounded-lg p-3 text-lg min-h-[120px] resize-none"
-                      rows={4}
-                      maxLength={500}
-                      placeholder="اكتب سؤالك هنا (حد أقصى 500 حرف - 4-5 أسطر)"
-                      required
-                    />
-                    <p className="text-sm text-gray-500 mt-1">{existingClientForm.question.length}/500 حرف</p>
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-[#1a365d] hover:bg-[#2d3748] text-white py-4 text-lg font-bold rounded-lg transition-colors"
-                  >
-                    إرسال الاستشارة
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-
-            {/* New Client Form */}
-            <Card className="shadow-2xl border-0 bg-white">
-              <CardHeader className="bg-gradient-to-r from-[#f7b731] to-[#ffa502] text-[#1a365d] rounded-t-lg">
-                <CardTitle className="flex items-center gap-3 text-2xl">
-                  <UserPlus className="w-8 h-8 text-[#1a365d]" />
-                  عميل جديد
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-8">
-                <form onSubmit={handleNewClientSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="new-name" className="text-[#1a365d] font-bold text-lg">الاسم</Label>
-                    <Input
-                      id="new-name"
-                      type="text"
-                      value={newClientForm.name}
-                      onChange={(e) => setNewClientForm({...newClientForm, name: e.target.value})}
-                      className="mt-2 border-2 border-gray-200 focus:border-[#f7b731] rounded-lg p-3 text-lg"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="new-mobile" className="text-[#1a365d] font-bold text-lg">رقم الجوال</Label>
-                    <Input
-                      id="new-mobile"
-                      type="tel"
-                      value={newClientForm.mobile}
-                      onChange={(e) => setNewClientForm({...newClientForm, mobile: e.target.value})}
-                      className="mt-2 border-2 border-gray-200 focus:border-[#f7b731] rounded-lg p-3 text-lg"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="new-question" className="text-[#1a365d] font-bold text-lg">السؤال</Label>
-                    <textarea
-                      id="new-question"
-                      value={newClientForm.question}
-                      onChange={(e) => setNewClientForm({...newClientForm, question: e.target.value.slice(0, 500)})}
-                      className="mt-2 w-full border-2 border-gray-200 focus:border-[#f7b731] rounded-lg p-3 text-lg min-h-[120px] resize-none"
-                      rows={4}
-                      maxLength={500}
-                      placeholder="اكتب سؤالك هنا (حد أقصى 500 حرف - 4-5 أسطر)"
-                      required
-                    />
-                    <p className="text-sm text-gray-500 mt-1">{newClientForm.question.length}/500 حرف</p>
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-[#f7b731] hover:bg-[#ffa502] text-[#1a365d] py-4 text-lg font-bold rounded-lg transition-colors"
-                  >
-                    إرسال الاستشارة
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-16 text-center">
-            <div className="bg-white p-8 rounded-3xl shadow-2xl max-w-3xl mx-auto border border-gray-100">
-              <h3 className="text-2xl font-bold text-[#1a365d] mb-4">معلومات مهمة</h3>
-              <div className="grid md:grid-cols-2 gap-6 text-right">
-                <div>
-                  <h4 className="font-bold text-[#1a365d] mb-2">للعملاء الحاليين:</h4>
-                  <p className="text-gray-600">يرجى تقديم رقم الملف للحصول على استشارة سريعة ومتابعة حالتك الطبية.</p>
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#1a365d] mb-2">للعملاء الجدد:</h4>
-                  <p className="text-gray-600">سيتم إنشاء ملف جديد لك وستحصل على رقم ملف للمتابعة المستقبلية.</p>
-                </div>
-              </div>
-            </div>
-          </div>
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full bg-[#f7b731] hover:bg-[#f7b731]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                    >
+                      <Send className="w-6 h-6 mr-3" />
+                      إرسال الاستشارة
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </section>
   );
 };
 
-export default ConsultationForms;
+export default ConsultationFroms;

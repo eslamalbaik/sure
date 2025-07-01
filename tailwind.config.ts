@@ -21,6 +21,7 @@ export default {
 		extend: {
 			fontFamily: {
 				'arabic': ['Cairo', 'system-ui', '-apple-system', 'sans-serif'],
+                 'Brands': ['RawasiDisplay', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',

@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Menu, X, Phone, Mail } from 'lucide-react';
-
+import logo from '/logo-removebg-preview (4).png'
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -15,12 +15,12 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-lg sticky top-0 z-50" dir="rtl">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-28">
         <div className="flex items-center justify-between h-20">
           <div className="flex items-center space-x-4 space-x-reverse">
-            <h1 className="text-2xl font-bold text-[#1a365d]">د. عبدالله الصبيعي</h1>
+            {/* <h1 className="text-2xl font-bold text-[#1a365d]">د. عبدالله الصبيعي</h1> */}
+            <img src={logo} className='w-28 h-14' alt="logo website"/>
           </div>
-
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8 space-x-reverse">
             <button 
@@ -34,12 +34,6 @@ const Header = () => {
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
               نبذة
-            </button>
-            <button 
-              onClick={() => scrollToSection('services')}
-              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
-            >
-              الخدمات
             </button>
             <button 
               onClick={() => scrollToSection('consultation')}
@@ -59,23 +53,13 @@ const Header = () => {
             >
               المدونة
             </button>
-            <button 
-              onClick={() => scrollToSection('contact')}
-              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
-            >
-              التواصل
-            </button>
           </nav>
 
           {/* Contact Info */}
           <div className="hidden lg:flex items-center space-x-4 space-x-reverse">
-            <div className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600">
-              <span>+966 50 123 4567</span>
+            <div className="flex items-center gap-2 px-8 py-4 text-sm font-bold rounded-full bg-[#560CAB]  text-white">
+            <span>  احجز استشارتك الأن</span>
               <Phone className="w-4 h-4" />
-            </div>
-            <div className="flex items-center space-x-2 space-x-reverse text-sm text-gray-600">
-              <span>info@subaieconsult.com</span>
-              <Mail className="w-4 h-4" />
             </div>
           </div>
 

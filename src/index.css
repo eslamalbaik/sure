@@ -2,7 +2,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@font-face {
+  font-family: 'RawasiDisplay';
+  src: url('/public/fonts/Janna LT Bold.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -98,4 +104,24 @@
   html {
     direction: rtl;
   }
+}
+
+
+
+
+
+/* Custom gradient backgrounds */
+.gradient-primary {
+  background: linear-gradient(135deg, #47286c 0%, #d0a63a 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #d0a63a 0%, #47286c 100%);
+}
+
+
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
 }

@@ -1,4 +1,8 @@
 
+import { Facebook, Instagram, X } from "lucide-react";
+import {TikTokIcon} from '@/components/ui/TikTokIcon'
+import logo from '/logo-footer.png'
+
 const Footer = () => {
   return (
     <footer className="bg-[#1a365d] text-white py-12" dir="rtl">
@@ -6,7 +10,8 @@ const Footer = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-2xl font-bold mb-4 text-[#f7b731]">د. عبدالله الصبيعي</h3>
+              <img src={logo} className='w-28 h-16' alt="logo website"/>
+<br />
               <p className="text-gray-300 mb-4 leading-relaxed">
                 خدمات استشارية طبية متخصصة مكرسة لتقديم إرشادات الرعاية الصحية الخبيرة والرعاية الشخصية للمرضى.
               </p>
@@ -17,22 +22,52 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li><a href="#home" className="text-gray-300 hover:text-[#f7b731] transition-colors">الرئيسية</a></li>
                 <li><a href="#about" className="text-gray-300 hover:text-[#f7b731] transition-colors">نبذة</a></li>
-                <li><a href="#services" className="text-gray-300 hover:text-[#f7b731] transition-colors">الخدمات</a></li>
                 <li><a href="#consultation" className="text-gray-300 hover:text-[#f7b731] transition-colors">الاستشارات</a></li>
                 <li><a href="#faq" className="text-gray-300 hover:text-[#f7b731] transition-colors">الأسئلة الشائعة</a></li>
                 <li><a href="#blog" className="text-gray-300 hover:text-[#f7b731] transition-colors">المدونة</a></li>
-                <li><a href="#contact" className="text-gray-300 hover:text-[#f7b731] transition-colors">التواصل</a></li>
               </ul>
             </div>
             
-            <div>
-              <h4 className="text-xl font-bold mb-4">معلومات التواصل</h4>
-              <div className="space-y-2 text-gray-300">
-                <p>+966 50 123 4567</p>
-                <p>info@subaieconsult.com</p>
-                <p>الرياض، المملكة العربية السعودية</p>
-                <p>الأحد - الخميس: 9:00 ص - 5:00 م</p>
-              </div>
+   <div>
+      <h4 className="text-xl font-bold mb-4">تابعنا على السوشال ميديا</h4>
+      <div className="flex items-center gap-4 text-gray-300">
+        <a
+          href="https://www.facebook.com/Prof.Subaie/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+          className="hover:text-blue-500 transition-colors"
+        >
+          <Facebook size={24} />
+        </a>
+        <a
+          href="prof_subaie"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Twitter"
+          className="hover:text-sky-400 transition-colors"
+        >
+          <X size={24} />
+        </a>
+        <a
+          href="https://www.instagram.com/prof_subaie/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+          className="hover:text-pink-400 transition-colors"
+        >
+          <Instagram size={24} />
+        </a>
+        <a
+          href="https://www.tiktok.com/@prof.subaie"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="YouTube"
+          className="hover:text-red-500 transition-colors"
+        >
+          <TikTokIcon className="w-8 h-8 hover:text-black transition-colors" />
+        </a>
+      </div>
             </div>
           </div>
           

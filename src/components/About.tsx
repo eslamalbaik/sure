@@ -1,83 +1,162 @@
 
-import { Card, CardContent } from '@/components/ui/card';
-import { GraduationCap, Award, Users, Stethoscope } from 'lucide-react';
-
-const About = () => {
+import { GraduationCap, Briefcase, Target, Star, TrendingUp, Users, MessagesSquare,SquareLibrary  } from 'lucide-react';
+import p5 from '/assets/droctor.jpg';
+const AboutSection = () => {
   return (
-    <section id="about" className="py-20 bg-gray-50" dir="rtl">
+    <section id="about" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#1a365d] mb-4">نبذة عن د. عبدالله الصبيعي</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              طبيب متميز مكرس لتقديم خدمات الاستشارات الطبية الاستثنائية
-            </p>
+            <h2 className="text-4xl  font-bold text-[#1a365d] mb-6">
+              عن البروفيسور  عبدالله السبيعي
+            </h2>
+            {/* <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+استشاري وبروفيسور الطب النفسي في "مركز إدراك للاستشارات الطبية"، المملكة العربية السعودية.
+            </p> */}
+                        <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
+
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-            <div className="order-2 lg:order-1">
-              <h3 className="text-3xl font-bold text-[#1a365d] mb-6">التميز المهني</h3>
-              <p className="text-gray-700 mb-6 text-lg leading-relaxed">
-                يتمتع د. عبدالله الصبيعي بخبرة واسعة في الاستشارات الطبية ورعاية المرضى. 
-                مع التزامه بالتميز والنهج المتمحور حول المريض، يقدم إرشادات طبية شاملة 
-                مصممة خصيصاً للاحتياجات الفردية.
-              </p>
-              <p className="text-gray-700 mb-8 text-lg leading-relaxed">
-                تمتد خبرته عبر مختلف التخصصات الطبية، مما يضمن حصول المرضى على الاستشارة 
-                الأنسب والأكثر فعالية لمشاكلهم الصحية المحددة.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <span className="bg-[#f7b731] text-[#1a365d] px-4 py-2 rounded-full font-bold">الاستشارات الطبية</span>
-                <span className="bg-[#1a365d] text-white px-4 py-2 rounded-full font-bold">رعاية المرضى</span>
-                <span className="bg-[#f7b731] text-[#1a365d] px-4 py-2 rounded-full font-bold">التقييم الصحي</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="space-y-8">
+              <h3 className="text-3xl font-bold text-[#1a365d] mb-8">
+                المؤهلات والخبرات
+              </h3>
+              
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4 rtl:space-x-reverse p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-[#560CAB] rounded-full flex items-center justify-center flex-shrink-0">
+                    <GraduationCap className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg text-[#1a365d]">المؤهلات الأكاديمية</h4>
+                    <p className="text-gray-600">زمالة في الطب النفسي من الكلية الملكية للأطباء النفسيين - كندا</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4 rtl:space-x-reverse p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-[#f7b731] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Briefcase className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg text-[#1a365d]">استشاري معتمد</h4>
+                    <p className="text-gray-600">استشاري الطب النفسي في "مركز إدراك للاستشارات الطبية".
+</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4 rtl:space-x-reverse p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-[#560CAB] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Target className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg text-[#1a365d]">خبرة متخصصة</h4>
+                    <p className="text-gray-600">أكثر من 30 سنة في الطب النفسي</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-4 rtl:space-x-reverse p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-[#f7b731] rounded-full flex items-center justify-center flex-shrink-0">
+                    <Star className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg text-[#1a365d]">الإنجازات العلمية</h4>
+                    <p className="text-gray-600 ">+٩٤  بحثاً علمياً منشوراً في مجالات: اضطرابات الأكل، التدخين، والأمراض النفسية.</p>
+                  </div>
+                      
+                </div>
+
+                 <div className="flex items-start space-x-4 rtl:space-x-reverse p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 bg-[#560CAB] rounded-full flex items-center justify-center flex-shrink-0">
+                    <SquareLibrary  className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg text-[#1a365d]">المؤلفات</h4>
+                    <p className="text-gray-600 ">مؤلف كتابي: "إن كنت خجولاً عالج نفسك بنفسك" و"صناعة النجاح".
+
+</p>
+                  </div>
+                      
+                </div>
               </div>
             </div>
-            <div className="order-1 lg:order-2">
-              <img 
-                src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                alt="د. عبدالله الصبيعي" 
-                className="rounded-2xl shadow-2xl w-full h-96 object-cover"
-              />
+
+            <div className="relative">
+              <div className="bg-white rounded-3xl shadow-2xl p-8 transform hover:scale-105 transition-transform duration-300">
+                <img 
+                  src={p5}
+                  alt="Dr. Abdullah Al-Subaie"
+                  className="w-full h-[400px] object-cover rounded-2xl mb-6"
+                />
+                <div className="text-center">
+                  <h4 className="text-2xl font-bold text-[#1a365d] mb-2">
+                   ا.د.عبدالله بن سلطان السبيعي
+                  </h4>
+                  <p className="text-[#f7b731] font-semibold mb-4">
+استشاري وبروفيسور متخصص في الطب النفسي
+                  </p>
+                  {/* <div className="flex justify-center space-x-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className="w-5 h-5 fill-[#f7b731] text-[#f7b731]" />
+                    ))}
+                  </div> */}
+                </div>
+              </div>
+              
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-20 h-20 bg-[#f7b731] rounded-full flex items-center justify-center shadow-lg">
+                <Star className="w-10 h-10 text-white" />
+              </div>
+              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center shadow-lg">
+                <MessagesSquare  className="w-8 h-8 text-white" />
+              </div>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center p-6 hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg">
-              <CardContent className="pt-6">
-                <GraduationCap className="w-12 h-12 mx-auto mb-4 text-[#1a365d]" />
-                <h4 className="text-xl font-bold mb-2 text-[#1a365d]">التعليم</h4>
-                <p className="text-gray-600">درجة طبية متقدمة مع تدريب متخصص</p>
-              </CardContent>
-            </Card>
+        <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 relative overflow-hidden">
+  <div className="absolute top-0 right-0 w-32 h-32 bg-[#f7b731]/10 rounded-full -translate-y-16 translate-x-16"></div>
+  <div className="absolute bottom-0 left-0 w-40 h-40 bg-[#560CAB]/10 rounded-full translate-y-20 -translate-x-20"></div>
 
-            <Card className="text-center p-6 hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg">
-              <CardContent className="pt-6">
-                <Award className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
-                <h4 className="text-xl font-bold mb-2 text-[#1a365d]">الاعتراف</h4>
-                <p className="text-gray-600">جوائز واعتراف بالتميز الطبي</p>
-              </CardContent>
-            </Card>
+  <div className="relative z-10">
+    <h3 className="text-3xl font-bold text-[#560CAB] mb-6 text-center">
+      رؤيتنا ورسالتنا
+    </h3>
+    <p className="text-lg text-gray-700 leading-relaxed text-center max-w-4xl mx-auto mb-8">
+      نسعى في مركز شور إلى تقديم دعم نفسي متخصص ومتكامل، 
+      يركز على تمكين الأفراد من تجاوز التحديات النفسية 
+      وبناء حياة متوازنة وصحية، من خلال خدمات علاجية واستشارية مهنية.
+    </p>
 
-            <Card className="text-center p-6 hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg">
-              <CardContent className="pt-6">
-                <Users className="w-12 h-12 mx-auto mb-4 text-[#1a365d]" />
-                <h4 className="text-xl font-bold mb-2 text-[#1a365d]">الخبرة</h4>
-                <p className="text-gray-600">سنوات من رعاية المرضى والاستشارات المتفانية</p>
-              </CardContent>
-            </Card>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="text-center p-4">
+        <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Target className="w-8 h-8 text-white" />
+        </div>
+        <h4 className="font-semibold text-[#560CAB] mb-2">فهم دقيق للحالة</h4>
+        <p className="text-gray-600 text-sm">تشخيص شامل لحالة المستفيد النفسية والسلوكية</p>
+      </div>
+      <div className="text-center p-4">
+        <div className="w-16 h-16 bg-[#f7b731] rounded-full flex items-center justify-center mx-auto mb-4">
+          <TrendingUp className="w-8 h-8 text-white" />
+        </div>
+        <h4 className="font-semibold text-[#560CAB] mb-2">تحسن مستدام</h4>
+        <p className="text-gray-600 text-sm">خطط علاجية تضمن تطورًا نفسيًا طويل الأمد</p>
+      </div>
+      <div className="text-center p-4">
+        <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Users className="w-8 h-8 text-white" />
+        </div>
+        <h4 className="font-semibold text-[#560CAB] mb-2">علاقة علاجية داعمة</h4>
+        <p className="text-gray-600 text-sm">نُقدّم الدعم كجزء من علاقة إنسانية مهنية وآمنة</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-            <Card className="text-center p-6 hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg">
-              <CardContent className="pt-6">
-                <Stethoscope className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
-                <h4 className="text-xl font-bold mb-2 text-[#1a365d]">الخبرة</h4>
-                <p className="text-gray-600">معرفة ومهارات طبية شاملة</p>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default About;
+export default AboutSection;
