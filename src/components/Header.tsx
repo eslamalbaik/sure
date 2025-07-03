@@ -58,12 +58,13 @@ useEffect(() => {
             >
               الرئيسية
             </button></a>
-            <button 
-              onClick={() => scrollToSection('about')}
+          <a href="/about">
+              <button 
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
                  عن الدكتور عبدالله
             </button>
+          </a>
             <button 
               onClick={() => scrollToSection('consultation')}
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
