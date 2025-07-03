@@ -1,8 +1,30 @@
 
-import { useState } from 'react';
 import { Menu, X, Phone, Mail } from 'lucide-react';
 import logo from '/logo-removebg-preview (4).png'
+import { useEffect, useState } from 'react';
+
 const Header = () => {
+  const [isVisible, setIsVisible] = useState(true);
+const [lastScrollY, setLastScrollY] = useState(0);
+
+useEffect(() => {
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > lastScrollY && currentScrollY > 100) {
+      // Scroll down → Hide
+      setIsVisible(false);
+    } else {
+      // Scroll up → Show
+      setIsVisible(true);
+    }
+
+    setLastScrollY(currentScrollY);
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, [lastScrollY]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const scrollToSection = (sectionId: string) => {
@@ -14,26 +36,33 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50" dir="rtl">
-      <div className="container mx-auto px-28">
+<header
+  className={`bg-white shadow-lg sticky top-0 z-50 transition-transform duration-300 ${
+    isVisible ? 'translate-y-0' : '-translate-y-full'
+  }`}
+  dir="rtl"
+>      <div className="container mx-auto px-28">
         <div className="flex items-center justify-between h-20">
-          <div className="flex items-center space-x-4 space-x-reverse">
+         <a href="/">
+             <div className="flex items-center space-x-4 space-x-reverse">
             {/* <h1 className="text-2xl font-bold text-[#1a365d]">د. عبدالله الصبيعي</h1> */}
             <img src={logo} className='w-28 h-14' alt="logo website"/>
           </div>
+         </a>
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8 space-x-reverse">
-            <button 
-              onClick={() => scrollToSection('home')}
+          <a href="/">
+               <button 
+              onClick={() => scrollToSection('/')}
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
               الرئيسية
-            </button>
+            </button></a>
             <button 
               onClick={() => scrollToSection('about')}
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-              نبذة
+                 عن الدكتور عبدالله
             </button>
             <button 
               onClick={() => scrollToSection('consultation')}
@@ -77,7 +106,7 @@ const Header = () => {
           <div className="md:hidden pb-4">
             <nav className="flex flex-col space-y-2">
               <button 
-                onClick={() => scrollToSection('home')}
+                onClick={() => scrollToSection('/')}
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                 الرئيسية
@@ -86,13 +115,7 @@ const Header = () => {
                 onClick={() => scrollToSection('about')}
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
-                نبذة
-              </button>
-              <button 
-                onClick={() => scrollToSection('services')}
-                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
-              >
-                الخدمات
+                  عن الدكتور عبدالله
               </button>
               <button 
                 onClick={() => scrollToSection('consultation')}
@@ -111,12 +134,6 @@ const Header = () => {
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                 المدونة
-              </button>
-              <button 
-                onClick={() => scrollToSection('contact')}
-                className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
-              >
-                التواصل
               </button>
             </nav>
           </div>

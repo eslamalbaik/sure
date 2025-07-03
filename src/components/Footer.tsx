@@ -21,7 +21,7 @@ const Footer = () => {
               <h4 className="text-xl font-bold mb-4">روابط سريعة</h4>
               <ul className="space-y-2">
                 <li><a href="#home" className="text-gray-300 hover:text-[#f7b731] transition-colors">الرئيسية</a></li>
-                <li><a href="#about" className="text-gray-300 hover:text-[#f7b731] transition-colors">نبذة</a></li>
+                <li><a href="#about" className="text-gray-300 hover:text-[#f7b731] transition-colors">  عن الدكتور عبدالله</a></li>
                 <li><a href="#consultation" className="text-gray-300 hover:text-[#f7b731] transition-colors">الاستشارات</a></li>
                 <li><a href="#faq" className="text-gray-300 hover:text-[#f7b731] transition-colors">الأسئلة الشائعة</a></li>
                 <li><a href="#blog" className="text-gray-300 hover:text-[#f7b731] transition-colors">المدونة</a></li>

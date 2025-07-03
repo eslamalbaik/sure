@@ -6,35 +6,21 @@ const ServicesSection = () => {
 
 const services = [
   {
-    icon: BrainCog,
-    title: "تعزيز المرونة النفسية",
-    description: "برامج تهدف إلى تقوية قدرة الفرد على التكيف مع التحديات والضغوط"
-  },
-  {
-    icon: Activity,
-    title: "إدارة الضغوط",
-    description: "تقنيات واستراتيجيات فعالة لمواجهة الضغوط النفسية والعملية"
-  },
-  {
     icon: Repeat,
-    title: "دعم مراحل الانتقال في الحياة",
-    description: "مرافقة وتوجيه الأفراد خلال التحولات المهمة في حياتهم"
+    title: "مسار تحديد الواجهة",
+    description: "للعملاء الذين لديهم مشكلة واضحة لكنهم يحتاجون تحديد جذورها ، ووضع خطة عمل أولية"
   },
   {
-    icon: Users,
-    title: "إدارة العلاقات",
-    description: "تعزيز مهارات التواصل وبناء علاقات صحية ومتوازنة"
+    icon: Lightbulb,
+    title: "مسار رسم الخريطة",
+    description: "للعملاء الذين لديهم هدف واضح محدد ويريدون العمل عليه بشكل مختلف"
   },
   {
-    icon: Heart,
-    title: "تعزيز الذكاء العاطفي",
-    description: "تنمية القدرة على التعرف على المشاعر والتحكم بها بفعالية"
+    icon: BrainCog,
+    title: "مسار الرحلة العميقة",
+    description: "للعملاء الملتزمون بتحول كبير وعميق في حياتهم أو علاقاتهم ، أو الذين يتعاملون مع تحديات معقدة"
   },
-  {
-    icon: ShieldCheck,
-    title: "تقدير الذات وبناء الثقة",
-    description: "برامج تهدف إلى رفع مستوى الوعي الذاتي وتعزيز الثقة بالنفس"
-  }
+  
 ];
 
   return (
@@ -43,11 +29,11 @@ const services = [
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1a365d] mb-6">
-              خدماتنا الاستشارية
+              مسارات شور
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-مجموعة شاملة من الخدمات الاستشارية المتخصصة لدعم الصحة النفسية         
-   </p>
+            مسارات شور: من التشخيص إلى التمكين لحياة نفسية متوازنة.
+              </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
 
           </div>
@@ -95,22 +81,22 @@ const services = [
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
                     <Target className="w-8 h-8 text-white" />
                   </div>
-                  <h4 className="text-xl font-semibold mb-3">خبرة متميزة</h4>
-                  <p className="text-white/90">أكثر من 30 سنة في مجال الاستشارات النفسية</p>
+                  <h4 className="text-xl font-semibold mb-3">خبرات متخصصة</h4>
+                  <p className="text-white/90">أكثر من 30 سنة في مجال الاستشارات </p>
                 </div>
                 <div className="group">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
                     <TrendingUp className="w-8 h-8 text-white" />
                   </div>
-                  <h4 className="text-xl font-semibold mb-3">تحوّلات ملموسة</h4>
+                  <h4 className="text-xl font-semibold mb-3">خطط ناجحة لتحسين جودة الحياة</h4>
                   <p className="text-white/90">نتائج فعلية في تحسين جودة الحياة</p>
                 </div>
                 <div className="group">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
                     <Users className="w-8 h-8 text-white" />
                   </div>
-                  <h4 className="text-xl font-semibold mb-3">نهج إنساني وشخصي</h4>
-                  <p className="text-white/90">نستمع إليك ونعمل معك لتقديم حلول تلائم تجربتك</p>
+                  <h4 className="text-xl font-semibold mb-3">منهج عملي</h4>
+                  <p className="text-white/90">يناقش عقلك ويحترم مشاعرك ويعاملك كمسؤول</p>
                 </div>
               </div>
             </div>

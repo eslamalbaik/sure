@@ -1,7 +1,34 @@
 
-import { GraduationCap, Briefcase, Target, Star, TrendingUp, Users, MessagesSquare,SquareLibrary  } from 'lucide-react';
+import { GraduationCap, Briefcase, Target,HeartHandshake,Compass, Star, TrendingUp, Users, MessagesSquare,SquareLibrary,ChevronDown ,Cannabis,HandHeart,ArrowLeft  } from 'lucide-react';
 import p5 from '/assets/droctor.jpg';
+import { Button } from './ui/button';
+
+
 const AboutSection = () => {
+
+
+  const features = [
+    {
+      title: 'مهارات تعزيز التواصل',
+      icon: <MessagesSquare className="w-7 h-7 text-white" />,
+    },
+    {
+      title: 'إعادة بناء الثقة',
+      icon: <HeartHandshake className="w-7 h-7 text-white" />,
+    },
+    {
+      title: 'استشارات حول الخلافات المتكررة',
+      icon: <Users className="w-7 h-7 text-white" />,
+    },
+    {
+      title: 'مهارات التكيف مع التحولات',
+      icon: <Compass className="w-7 h-7 text-white" />,
+    },
+    {
+      title: 'إدارة النزاعات',
+      icon: <Users className="w-7 h-7 text-white" />,
+    },
+  ];
   return (
     <section id="about" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
@@ -10,11 +37,8 @@ const AboutSection = () => {
             <h2 className="text-4xl  font-bold text-[#1a365d] mb-6">
               عن البروفيسور  عبدالله السبيعي
             </h2>
-            {/* <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-استشاري وبروفيسور الطب النفسي في "مركز إدراك للاستشارات الطبية"، المملكة العربية السعودية.
-            </p> */}
-                        <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
-
+         
+       <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
@@ -40,7 +64,7 @@ const AboutSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg text-[#1a365d]">استشاري معتمد</h4>
-                    <p className="text-gray-600">استشاري الطب النفسي في "مركز إدراك للاستشارات الطبية".
+                    <p className="text-gray-600">.استشاري الطب النفسي في مركز إدراك للإستشارات".
 </p>
                   </div>
                 </div>
@@ -78,6 +102,16 @@ const AboutSection = () => {
                   </div>
                       
                 </div>
+     <div className="pt-4">
+      <a href="/about">
+                <Button
+                  className="bg-[#560CAB] hover:bg-[#560CAB]/90 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  اقرأ المزيد عن الدكتور
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                </Button>
+                </a>
+              </div>
               </div>
             </div>
 
@@ -122,37 +156,64 @@ const AboutSection = () => {
       رؤيتنا ورسالتنا
     </h3>
     <p className="text-lg text-gray-700 leading-relaxed text-center max-w-4xl mx-auto mb-8">
-      نسعى في مركز شور إلى تقديم دعم نفسي متخصص ومتكامل، 
-      يركز على تمكين الأفراد من تجاوز التحديات النفسية 
-      وبناء حياة متوازنة وصحية، من خلال خدمات علاجية واستشارية مهنية.
-    </p>
+      أن نكون "بوصلتك في زمن التحديات" و رسالتنا  هي المساعدة في بناء علاقات أعمق، لتجاوز تحديات الحياة بثقة وسالددلام . 
 
+    </p>
+            {/* <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
+<br />
+  <h3 className="text-3xl font-bold text-[#560CAB] mb-6 text-center">
+     مجالات عملنا
+    </h3> */}
+
+  </div>
+</div>
+<div className="text-center mt-24 mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a365d] mb-6">
+            مجال عملنا 
+            </h2>
+            {/* <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            مسارات شور: من التشخيص إلى التمكين لحياة نفسية متوازنة.
+              </p> */}
+            <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
+
+          </div>
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="text-center p-4">
         <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
           <Target className="w-8 h-8 text-white" />
         </div>
-        <h4 className="font-semibold text-[#560CAB] mb-2">فهم دقيق للحالة</h4>
-        <p className="text-gray-600 text-sm">تشخيص شامل لحالة المستفيد النفسية والسلوكية</p>
+        <h4 className="font-semibold text-[#560CAB] mb-2">مهارات تعزيز التواصل. </h4>
+        {/* <p className="text-gray-600 text-sm">تشخيص شامل لحالة المستفيد النفسية والسلوكية</p> */}
       </div>
       <div className="text-center p-4">
         <div className="w-16 h-16 bg-[#f7b731] rounded-full flex items-center justify-center mx-auto mb-4">
           <TrendingUp className="w-8 h-8 text-white" />
         </div>
-        <h4 className="font-semibold text-[#560CAB] mb-2">تحسن مستدام</h4>
-        <p className="text-gray-600 text-sm">خطط علاجية تضمن تطورًا نفسيًا طويل الأمد</p>
+        <h4 className="font-semibold text-[#560CAB] mb-2">مهارات إعادة بناء الثقة</h4>
+        {/* <p className="text-gray-600 text-sm">خطط علاجية تضمن تطورًا نفسيًا طويل الأمد</p> */}
       </div>
       <div className="text-center p-4">
         <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
           <Users className="w-8 h-8 text-white" />
         </div>
-        <h4 className="font-semibold text-[#560CAB] mb-2">علاقة علاجية داعمة</h4>
-        <p className="text-gray-600 text-sm">نُقدّم الدعم كجزء من علاقة إنسانية مهنية وآمنة</p>
+        <h4 className="font-semibold text-[#560CAB] mb-2">استشارات في التعامل مع الخلافات المتكررة</h4>
+        {/* <p className="text-gray-600 text-sm">نُقدّم الدعم كجزء من علاقة إنسانية مهنية وآمنة</p> */}
       </div>
     </div>
-  </div>
-</div>
-
+     <div className="flex justify-center items-center mt-8 gap-6">
+      <div className="text-center p-4">
+        <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
+          <HandHeart  className="w-8 h-8 overflow-hidden text-white" />
+        </div>
+        <h4 className="font-semibold text-[#560CAB] mb-2">مهارات التكيف مع تحديات الحياة </h4>
+      </div>
+      <div className="text-center p-4 ">
+        <div className="w-16 h-16 bg-[#f7b731] rounded-full flex items-center justify-center mx-auto mb-4">
+          <Cannabis className="w-8 h-8 text-white" />
+        </div>
+        <h4 className="font-semibold text-[#560CAB] mb-2">إدارة النزاعات في العمل والعلاقات.</h4>
+      </div>
+    </div>
         </div>
       </div>
     </section>

@@ -54,10 +54,10 @@ const ConsultationFroms = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-4xl font-bold text-[#1a365d] mb-6">
-              استشارة مجانية
+              الاستشارات
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              احصل على استشارة مجانية من د. عبدالله السبيعي، المتخصص في الطب النفسي.
+              احصل على استشارة  من د. عبدالله السبيعي، المتخصص في الطب النفسي.
             </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
 
@@ -117,7 +117,7 @@ const ConsultationFroms = () => {
                           value={existingClientForm.fileNumber}
                           onChange={(e) => setExistingClientForm({ ...existingClientForm, fileNumber: e.target.value })}
                           className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
-                          placeholder="أدخل رقم الملف الاستشاري"
+                          placeholder="أدخل رقم الملف الطبي"
                           required
                         />
                       </div>
@@ -200,7 +200,7 @@ const ConsultationFroms = () => {
                   <form onSubmit={handleNewClientSubmit} className="space-y-6">
                       <div>
                         <Label htmlFor="new-name" className="text-lg font-semibold text-[#1a365d]">
-                          الاسم الكامل
+                              الرمز أو الاسم المستعار
                         </Label>
                         <Input
                           id="new-name"
@@ -208,35 +208,35 @@ const ConsultationFroms = () => {
                           value={newClientForm.name}
                           onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
                           className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                          placeholder="أدخل اسمك الكامل"
+                          placeholder="أدخل اسمك "
                           required
                         />
                       </div>
                       <div>
-                        <Label htmlFor="new-mobile" className="text-lg font-semibold text-[#1a365d]">
-                          رقم الجوال
+                        <Label htmlFor="email" className="text-lg font-semibold text-[#1a365d]">
+                          البريد الإلكتروني 
                         </Label>
                         <Input
-                          id="new-mobile"
-                          type="tel"
+                          id="email"
+                          type="email"
                           value={newClientForm.mobile}
                           onChange={(e) => setNewClientForm({ ...newClientForm, mobile: e.target.value })}
                           className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                          placeholder="+966920007731"
+                          placeholder="exmaple@gmail.com"
                           required
                         />
                       </div>
 
                     <div>
                       <Label htmlFor="new-question" className="text-lg font-semibold text-[#1a365d]">
-                        الاستشارة أو السؤال
+                        وصف المشكلة مقيدة ب أربع سطور
                       </Label>
                       <Textarea
                         id="new-question"
                         value={newClientForm.question}
                         onChange={(e) => setNewClientForm({ ...newClientForm, question: e.target.value })}
                         className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                        placeholder="اكتب استشارتك أو سؤالك هنا بالتفصيل"
+                        placeholder="اكتب  وصف المشكلة مقيدة ب أربع سطور"
                         maxLength={800}
                         required
                       />

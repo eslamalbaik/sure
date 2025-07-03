@@ -22,17 +22,17 @@ const Hero = () => {
                 <span className="text-xs">متاح الآن للاستشارات</span>
               </div>
               <h1 className="text-4xl font-Brands  lg:text-[55px] font-bold mb-6 animate-fade-in leading-tight">
-                الاستشارات النفسية
+                شور للإستشارات
                 <span className="block text-[#f7b731] mt-2">المتخصصة</span>
               </h1>
               <h2 className="text-2xl lg:text-3xl text-[#f7b731] mb-8 animate-fade-in">
                 د. عبدالله السبيعي
               </h2>
               <p className="text-xl lg:text-2xl mb-12 opacity-90 animate-fade-in leading-relaxed">
-                خدمات استشارية نفسية متخصصة مع سنوات من الخبرة في تقديم الحلول الصحية المخصصة
+                نفترض فيك السلامة فلا نعالجك ولا نقودك ، بل نقف معك ونسير جنبك
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-16">
+              {/* <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-16">
                 <Button 
                   onClick={scrollToConsultation}
                   size="lg" 
@@ -48,7 +48,7 @@ const Hero = () => {
                 >
                   اعرف المزيد
                 </Button>
-              </div>
+              </div> */}
             </div>
 
             <div className="relative">
