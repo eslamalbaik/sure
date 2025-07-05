@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -16,8 +15,7 @@ const ConsultationFroms = () => {
     fileNumber: '',
     mobile: '',
     question: '',
-    lastVisit: "", // أضفت هذا السطر
-
+    lastVisit: '',
   });
 
   const [newClientForm, setNewClientForm] = useState({
@@ -35,7 +33,7 @@ const ConsultationFroms = () => {
       title: "تم إرسال الاستشارة بنجاح",
       description: "سيتم التواصل معك في أقرب وقت ممكن"
     });
-    setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '' });
+    setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
   };
 
   const handleNewClientSubmit = (e: React.FormEvent) => {
