@@ -25,6 +25,8 @@ const Footer = () => {
                 <li><a href="#consultation" className="text-gray-300 hover:text-[#f7b731] transition-colors">الاستشارات</a></li>
                 <li><a href="#faq" className="text-gray-300 hover:text-[#f7b731] transition-colors">الأسئلة الشائعة</a></li>
                 <li><a href="#blog" className="text-gray-300 hover:text-[#f7b731] transition-colors">المدونة</a></li>
+                <li><a href="/terms" className="text-gray-300 hover:text-[#f7b731] transition-colors">شروط الاستخدام</a></li>
+                <li><a href="/privacy" className="text-gray-300 hover:text-[#f7b731] transition-colors">سياسة الخصوصية</a></li>
               </ul>
             </div>
             
