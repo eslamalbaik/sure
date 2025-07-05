@@ -8,6 +8,7 @@ import FAQ from '@/components/FAQ';
 import Blog from '@/components/Blog';
 import Contact from '@/components/Contact';
 import Footer from '@/components/Footer';
+      import ClientJourney from '@/components/ClientJourney';
 
 const Index = () => {
   return (
@@ -15,6 +16,7 @@ const Index = () => {
       <Hero />
       <About />
       <Services />
+      <ClientJourney/>
       <ConsultationForms />
       <Blog />
       <FAQ />

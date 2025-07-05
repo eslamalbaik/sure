@@ -5,7 +5,7 @@ import logo from '/logo-footer.png'
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1a365d] text-white py-12" dir="rtl">
+    <footer className="bg-[#1a365d] text-white py-12 border-t-4 border-[#f7b731]"  dir="rtl">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
@@ -21,7 +21,7 @@ const Footer = () => {
               <h4 className="text-xl font-bold mb-4">روابط سريعة</h4>
               <ul className="space-y-2">
                 <li><a href="#home" className="text-gray-300 hover:text-[#f7b731] transition-colors">الرئيسية</a></li>
-                <li><a href="#about" className="text-gray-300 hover:text-[#f7b731] transition-colors">  عن الدكتور عبدالله</a></li>
+                <li><a href="/about" className="text-gray-300 hover:text-[#f7b731] transition-colors">  عن الدكتور عبدالله</a></li>
                 <li><a href="#consultation" className="text-gray-300 hover:text-[#f7b731] transition-colors">الاستشارات</a></li>
                 <li><a href="#faq" className="text-gray-300 hover:text-[#f7b731] transition-colors">الأسئلة الشائعة</a></li>
                 <li><a href="#blog" className="text-gray-300 hover:text-[#f7b731] transition-colors">المدونة</a></li>

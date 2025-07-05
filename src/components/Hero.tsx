@@ -71,20 +71,15 @@ const Hero = () => {
             <div className="text-center bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
               <Waypoints className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
               <h3 className="text-xl font-bold mb-2">مسار إدراك</h3>
-              <p className="opacity-90">خدمات استشارات "مجانية" لمراجعي د.عبدالله السبيعي بمركز إدراك للإستشارات الطبية.
+              <p className="opacity-90 max-w-[400px]">خدمات استشارات مجانية لمراجعي د.عبدالله السبيعي بمركز إدراك للإستشارات الطبية.
  مع نتائج مثبتة</p>
             </div>
             <div className="text-center bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
               <Users className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
               <h3 className="text-xl font-bold mb-2"> باقة شور الخاصة</h3>
-              <p className="opacity-90">خدمة خاصة مدفوعة للإستشارات الشخصية في مجال العمل والعلاقات وتحولات الحياة.
+              <p className="opacity-90  max-w-[400px]">خدمة خاصة مدفوعة للإستشارات الشخصية في مجال العمل والعلاقات وتحولات الحياة.
 </p>
             </div>
-            {/* <div className="text-center bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
-              <Calendar className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
-              <h3 className="text-xl font-bold mb-2">مواعيد مرنة</h3>
-              <p className="opacity-90">أوقات مواعيد ملائمة تناسبك</p>
-            </div> */}
           </div>
         </div>
       </div>

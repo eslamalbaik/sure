@@ -80,8 +80,8 @@ const ConsultationFroms = () => {
                     <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
                       <FileText className="w-8 h-8" />
                     </div>
-                    <div className=''>
-                      <CardTitle className="text-3xl  font-bold">استشارة للمراجعين الحاليين</CardTitle>
+                    <div className=' '>
+                      <CardTitle className="lg:text-3xl text-2xl py-2 font-bold">استشارة للمراجعين الحاليين</CardTitle>
                       <CardDescription className="text-white/90 text-lg">
                         خاصة بمراجعي البروفيسور  عبدالله السبيعي بمركز  للإستشارات الطبية
                       </CardDescription>

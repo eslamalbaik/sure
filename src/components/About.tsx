@@ -104,12 +104,15 @@ const AboutSection = () => {
                 </div>
      <div className="pt-4">
       <a href="/about">
-                <Button
-                  className="bg-[#560CAB] hover:bg-[#560CAB]/90 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
-                >
-                  اقرأ المزيد عن الدكتور
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                </Button>
+          <Button
+      className="group bg-[#560CAB] hover:bg-[#560CAB]/90 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
+    >
+      اقرأ المزيد عن الدكتور
+      <ArrowLeft
+        className="w-4 h-4 mr-2 transition-transform duration-300 group-active:-translate-x-1"
+      />
+    </Button>
+
                 </a>
               </div>
               </div>
@@ -200,7 +203,7 @@ const AboutSection = () => {
         {/* <p className="text-gray-600 text-sm">نُقدّم الدعم كجزء من علاقة إنسانية مهنية وآمنة</p> */}
       </div>
     </div>
-     <div className="flex justify-center items-center mt-8 gap-6">
+     <div className="flex justify-center flex-wrap items-center mt-8 gap-6">
       <div className="text-center p-4">
         <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
           <HandHeart  className="w-8 h-8 overflow-hidden text-white" />

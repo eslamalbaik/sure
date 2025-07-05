@@ -41,12 +41,12 @@ useEffect(() => {
     isVisible ? 'translate-y-0' : '-translate-y-full'
   }`}
   dir="rtl"
->      <div className="container mx-auto px-28">
-        <div className="flex items-center justify-between h-20">
+>      <div className="container mx-auto lg:px-28">
+        <div className="flex items-center justify-between gap-8  h-20">
          <a href="/">
              <div className="flex items-center space-x-4 space-x-reverse">
             {/* <h1 className="text-2xl font-bold text-[#1a365d]">د. عبدالله الصبيعي</h1> */}
-            <img src={logo} className='w-28 h-14' alt="logo website"/>
+            <img src={logo} className='lg:w-28 lg:h-14 w-24 h-12' alt="logo website"/>
           </div>
          </a>
           {/* Desktop Navigation */}
@@ -86,12 +86,19 @@ useEffect(() => {
           </nav>
 
           {/* Contact Info */}
-          <div className="hidden lg:flex items-center space-x-4 space-x-reverse">
+          {/* <div className="hidden lg:flex items-center space-x-4 space-x-reverse">
             <div className="flex items-center gap-2 px-8 py-4 text-sm font-bold rounded-full bg-[#560CAB]  text-white">
             <span>  احجز استشارتك الأن</span>
               <Phone className="w-4 h-4" />
             </div>
-          </div>
+          </div> */}
+        <a href="#_" className="relative inline-flex items-center justify-center p-4 px-6 py-3 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-[#560CAB] rounded-full shadow-md group">
+            <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-[#560CAB] group-hover:translate-x-0 ease">
+              <Phone className="w-4 h-4" />
+            </span>
+            <span className="absolute flex items-center justify-center w-full h-full text-[#560CAB] transition-all duration-300 transform group-hover:translate-x-full ease">احجز استشارتك الأن</span>
+            <span className="relative invisible">احجز استشارتك الأن</span>
+        </a>
 
           {/* Mobile Menu Button */}
           <button
@@ -104,7 +111,7 @@ useEffect(() => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden pb-4">
+          <div className="md:hidden  pb-4">
             <nav className="flex flex-col space-y-2">
               <button 
                 onClick={() => scrollToSection('/')}
@@ -112,12 +119,12 @@ useEffect(() => {
               >
                 الرئيسية
               </button>
+           <a href="/about">
               <button 
-                onClick={() => scrollToSection('about')}
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                   عن الدكتور عبدالله
-              </button>
+              </button></a>
               <button 
                 onClick={() => scrollToSection('consultation')}
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
