@@ -25,6 +25,7 @@ const AdminAuth = () => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -33,6 +34,7 @@ const AdminAuth = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Current session:', session);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -46,18 +48,20 @@ const AdminAuth = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
       if (error) throw error;
 
+      console.log('Login successful:', data);
       toast({
         title: "تم تسجيل الدخول بنجاح",
         description: "مرحباً بك في لوحة التحكم"
       });
     } catch (error: any) {
+      console.error('Login error:', error);
       toast({
         title: "خطأ في تسجيل الدخول",
         description: error.message,
@@ -83,9 +87,9 @@ const AdminAuth = () => {
     setLoading(true);
 
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/admin`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
         options: {
@@ -95,11 +99,28 @@ const AdminAuth = () => {
 
       if (error) throw error;
 
+      // Create admin user record
+      if (data.user) {
+        const { error: adminError } = await supabase
+          .from('admin_users')
+          .insert({
+            user_id: data.user.id,
+            email: formData.email,
+            role: 'admin'
+          });
+
+        if (adminError) {
+          console.error('Error creating admin user:', adminError);
+        }
+      }
+
+      console.log('Signup successful:', data);
       toast({
         title: "تم إنشاء الحساب",
         description: "يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب"
       });
     } catch (error: any) {
+      console.error('Signup error:', error);
       toast({
         title: "خطأ في إنشاء الحساب",
         description: error.message,
@@ -115,11 +136,15 @@ const AdminAuth = () => {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       
+      setUser(null);
+      setSession(null);
+      
       toast({
         title: "تم تسجيل الخروج",
         description: "تم تسجيل خروجك بنجاح"
       });
     } catch (error: any) {
+      console.error('Logout error:', error);
       toast({
         title: "خطأ في تسجيل الخروج",
         description: error.message,
@@ -136,7 +161,7 @@ const AdminAuth = () => {
     );
   }
 
-  if (user) {
+  if (user && session) {
     return (
       <div>
         <div className="bg-white shadow-sm border-b p-4">

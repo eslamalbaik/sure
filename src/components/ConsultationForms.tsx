@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -28,21 +27,36 @@ const ConsultationFroms = () => {
     question: ''
   });
 
+  const sendNotification = async (consultationData: any) => {
+    try {
+      await supabase.functions.invoke('send-notification', {
+        body: consultationData
+      });
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  };
+
   const handleExistingClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
+      const consultationData = {
+        name: existingClientForm.name,
+        email: existingClientForm.mobile,
+        consultation_type: 'medical',
+        message: `رقم الملف: ${existingClientForm.fileNumber}\nتاريخ آخر زيارة: ${existingClientForm.lastVisit}\nرقم الجوال: ${existingClientForm.mobile}\n\nالاستشارة: ${existingClientForm.question}`,
+      };
+
       const { error } = await supabase
         .from('consultations')
-        .insert({
-          name: existingClientForm.name,
-          email: existingClientForm.mobile, // Using mobile field as contact
-          consultation_type: 'medical',
-          message: `رقم الملف: ${existingClientForm.fileNumber}\nتاريخ آخر زيارة: ${existingClientForm.lastVisit}\nرقم الجوال: ${existingClientForm.mobile}\n\nالاستشارة: ${existingClientForm.question}`,
-        });
+        .insert(consultationData);
 
       if (error) throw error;
+
+      // إرسال إشعار بريد إلكتروني
+      await sendNotification(consultationData);
 
       toast({
         title: "تم إرسال الاستشارة بنجاح",
@@ -67,16 +81,21 @@ const ConsultationFroms = () => {
     setIsSubmitting(true);
     
     try {
+      const consultationData = {
+        name: newClientForm.name,
+        email: newClientForm.email,
+        consultation_type: 'personal',
+        message: newClientForm.question,
+      };
+
       const { error } = await supabase
         .from('consultations')
-        .insert({
-          name: newClientForm.name,
-          email: newClientForm.email,
-          consultation_type: 'personal',
-          message: newClientForm.question,
-        });
+        .insert(consultationData);
 
       if (error) throw error;
+
+      // إرسال إشعار بريد إلكتروني
+      await sendNotification(consultationData);
 
       toast({
         title: "تم إرسال الاستشارة بنجاح",
@@ -105,7 +124,7 @@ const ConsultationFroms = () => {
               الاستشارات
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              احصل على استشارة  من د. عبدالله السبيعي، المتخصص في الطب النفسي.
+              احصل على استشارة من د. عبدالله السبيعي، المتخصص في الطب النفسي.
             </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
           </div>
@@ -123,16 +142,16 @@ const ConsultationFroms = () => {
             </TabsList>
 
             <TabsContent value="existing">
-              <Card dir="rtl" className="shadow-2xl  border-0 rounded-3xl overflow-hidden">
+              <Card dir="rtl" className="shadow-2xl border-0 rounded-3xl overflow-hidden">
                 <CardHeader className="bg-gradient-to-r from-[#1a365d] to-purple-600 text-white p-8">
-                  <div className="flex items-center gap-4 ">
+                  <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
                       <FileText className="w-8 h-8" />
                     </div>
-                    <div className=' '>
+                    <div>
                       <CardTitle className="lg:text-3xl text-2xl py-2 font-bold">استشارة للمراجعين الحاليين</CardTitle>
                       <CardDescription className="text-white/90 text-lg">
-                        خاصة بمراجعي البروفيسور  عبدالله السبيعي بمركز  للإستشارات الطبية
+                        خاصة بمراجعي البروفيسور عبدالله السبيعي بمركز للإستشارات الطبية
                       </CardDescription>
                     </div>
                   </div>
@@ -237,7 +256,7 @@ const ConsultationFroms = () => {
                       <UserPlus className="w-8 h-8" />
                     </div>
                     <div>
-                      <CardTitle className="text-3xl font-bold">قسم  الإستشارات الشخصية</CardTitle>
+                      <CardTitle className="text-3xl font-bold">قسم الإستشارات الشخصية</CardTitle>
                       <CardDescription className="text-white/90 text-lg">
                         للعملاء الجدد الذين لا يملكون ملف استشاري
                       </CardDescription>
@@ -246,34 +265,34 @@ const ConsultationFroms = () => {
                 </CardHeader>
                 <CardContent className="p-8">
                   <form onSubmit={handleNewClientSubmit} className="space-y-6">
-                      <div>
-                        <Label htmlFor="new-name" className="text-lg font-semibold text-[#1a365d]">
-                              الرمز أو الاسم المستعار
-                        </Label>
-                        <Input
-                          id="new-name"
-                          type="text"
-                          value={newClientForm.name}
-                          onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
-                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                          placeholder="أدخل اسمك "
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="email" className="text-lg font-semibold text-[#1a365d]">
-                          البريد الإلكتروني 
-                        </Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={newClientForm.email}
-                          onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
-                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                          placeholder="exmaple@gmail.com"
-                          required
-                        />
-                      </div>
+                    <div>
+                      <Label htmlFor="new-name" className="text-lg font-semibold text-[#1a365d]">
+                        الرمز أو الاسم المستعار
+                      </Label>
+                      <Input
+                        id="new-name"
+                        type="text"
+                        value={newClientForm.name}
+                        onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
+                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                        placeholder="أدخل اسمك"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email" className="text-lg font-semibold text-[#1a365d]">
+                        البريد الإلكتروني
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newClientForm.email}
+                        onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
+                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                        placeholder="example@gmail.com"
+                        required
+                      />
+                    </div>
 
                     <div>
                       <Label htmlFor="new-question" className="text-lg font-semibold text-[#1a365d]">
@@ -284,7 +303,7 @@ const ConsultationFroms = () => {
                         value={newClientForm.question}
                         onChange={(e) => setNewClientForm({ ...newClientForm, question: e.target.value })}
                         className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                        placeholder="اكتب  وصف المشكلة مقيدة ب أربع سطور"
+                        placeholder="اكتب وصف المشكلة مقيدة ب أربع سطور"
                         maxLength={800}
                         required
                       />
