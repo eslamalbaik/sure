@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,17 +9,9 @@ import { Bell, Eye, FileText, Users, Clock, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
+import { Tables } from '@/integrations/supabase/types';
 
-interface Consultation {
-  id: string;
-  name: string;
-  email: string;
-  consultation_type: 'medical' | 'personal';
-  message: string;
-  status: 'pending' | 'reviewed' | 'completed';
-  created_at: string;
-  updated_at: string;
-}
+type Consultation = Tables<'consultations'>;
 
 const AdminDashboard = () => {
   const { toast } = useToast();
