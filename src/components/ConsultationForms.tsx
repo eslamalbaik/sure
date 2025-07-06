@@ -7,9 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ConsultationFroms = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const [existingClientForm, setExistingClientForm] = useState({
     name: '',
     fileNumber: '',
@@ -20,30 +23,96 @@ const ConsultationFroms = () => {
 
   const [newClientForm, setNewClientForm] = useState({
     name: '',
-    mobile: '',
-    company: '',
-    industry: '',
+    email: '',
     question: ''
   });
 
-  const handleExistingClientSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Existing client consultation:', existingClientForm);
-    toast({
-      title: "تم إرسال الاستشارة بنجاح",
-      description: "سيتم التواصل معك في أقرب وقت ممكن"
-    });
-    setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+  const sendNotification = async (consultationData: any) => {
+    try {
+      await supabase.functions.invoke('send-notification', {
+        body: consultationData
+      });
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
   };
 
-  const handleNewClientSubmit = (e: React.FormEvent) => {
+  const handleExistingClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('New client consultation:', newClientForm);
-    toast({
-      title: "تم إرسال الاستشارة بنجاح",
-      description: "سيتم التواصل معك في أقرب وقت ممكن"
-    });
-    setNewClientForm({ name: '', mobile: '', company: '', industry: '', question: '' });
+    setIsSubmitting(true);
+    
+    try {
+      const consultationData = {
+        name: existingClientForm.name,
+        email: existingClientForm.mobile,
+        consultation_type: 'medical',
+        message: `رقم الملف: ${existingClientForm.fileNumber}\nتاريخ آخر زيارة: ${existingClientForm.lastVisit}\nرقم الجوال: ${existingClientForm.mobile}\n\nالاستشارة: ${existingClientForm.question}`,
+      };
+
+      const { error } = await supabase
+        .from('consultations')
+        .insert(consultationData);
+
+      if (error) throw error;
+
+      // إرسال إشعار بريد إلكتروني
+      await sendNotification(consultationData);
+
+      toast({
+        title: "تم إرسال الاستشارة بنجاح",
+        description: "سيتم التواصل معك في أقرب وقت ممكن"
+      });
+      
+      setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+    } catch (error) {
+      console.error('Error submitting consultation:', error);
+      toast({
+        title: "خطأ في الإرسال",
+        description: "حدث خطأ أثناء إرسال الاستشارة. يرجى المحاولة مرة أخرى.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleNewClientSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      const consultationData = {
+        name: newClientForm.name,
+        email: newClientForm.email,
+        consultation_type: 'personal',
+        message: newClientForm.question,
+      };
+
+      const { error } = await supabase
+        .from('consultations')
+        .insert(consultationData);
+
+      if (error) throw error;
+
+      // إرسال إشعار بريد إلكتروني
+      await sendNotification(consultationData);
+
+      toast({
+        title: "تم إرسال الاستشارة بنجاح",
+        description: "سيتم التواصل معك في أقرب وقت ممكن"
+      });
+      
+      setNewClientForm({ name: '', email: '', question: '' });
+    } catch (error) {
+      console.error('Error submitting consultation:', error);
+      toast({
+        title: "خطأ في الإرسال",
+        description: "حدث خطأ أثناء إرسال الاستشارة. يرجى المحاولة مرة أخرى.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -55,10 +124,9 @@ const ConsultationFroms = () => {
               الاستشارات
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              احصل على استشارة  من د. عبدالله السبيعي، المتخصص في الطب النفسي.
+              احصل على استشارة من د. عبدالله السبيعي، المتخصص في الطب النفسي.
             </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
-
           </div>
 
           <Tabs dir="rtl" defaultValue="existing" className="w-full">
@@ -74,16 +142,16 @@ const ConsultationFroms = () => {
             </TabsList>
 
             <TabsContent value="existing">
-              <Card dir="rtl" className="shadow-2xl  border-0 rounded-3xl overflow-hidden">
+              <Card dir="rtl" className="shadow-2xl border-0 rounded-3xl overflow-hidden">
                 <CardHeader className="bg-gradient-to-r from-[#1a365d] to-purple-600 text-white p-8">
-                  <div className="flex items-center gap-4 ">
+                  <div className="flex items-center gap-4">
                     <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
                       <FileText className="w-8 h-8" />
                     </div>
-                    <div className=' '>
+                    <div>
                       <CardTitle className="lg:text-3xl text-2xl py-2 font-bold">استشارة للمراجعين الحاليين</CardTitle>
                       <CardDescription className="text-white/90 text-lg">
-                        خاصة بمراجعي البروفيسور  عبدالله السبيعي بمركز  للإستشارات الطبية
+                        خاصة بمراجعي البروفيسور عبدالله السبيعي بمركز للإستشارات الطبية
                       </CardDescription>
                     </div>
                   </div>
@@ -169,10 +237,11 @@ const ConsultationFroms = () => {
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={isSubmitting}
                       className="w-full bg-[#1a365d] hover:bg-[#1a365d]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                     >
                       <Send className="w-6 h-6 mr-3" />
-                      إرسال الاستشارة
+                      {isSubmitting ? 'جاري الإرسال...' : 'إرسال الاستشارة'}
                     </Button>
                   </form>
                 </CardContent>
@@ -187,7 +256,7 @@ const ConsultationFroms = () => {
                       <UserPlus className="w-8 h-8" />
                     </div>
                     <div>
-                      <CardTitle className="text-3xl font-bold">قسم  الإستشارات الشخصية</CardTitle>
+                      <CardTitle className="text-3xl font-bold">قسم الإستشارات الشخصية</CardTitle>
                       <CardDescription className="text-white/90 text-lg">
                         للعملاء الجدد الذين لا يملكون ملف استشاري
                       </CardDescription>
@@ -196,34 +265,34 @@ const ConsultationFroms = () => {
                 </CardHeader>
                 <CardContent className="p-8">
                   <form onSubmit={handleNewClientSubmit} className="space-y-6">
-                      <div>
-                        <Label htmlFor="new-name" className="text-lg font-semibold text-[#1a365d]">
-                              الرمز أو الاسم المستعار
-                        </Label>
-                        <Input
-                          id="new-name"
-                          type="text"
-                          value={newClientForm.name}
-                          onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
-                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                          placeholder="أدخل اسمك "
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="email" className="text-lg font-semibold text-[#1a365d]">
-                          البريد الإلكتروني 
-                        </Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={newClientForm.mobile}
-                          onChange={(e) => setNewClientForm({ ...newClientForm, mobile: e.target.value })}
-                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                          placeholder="exmaple@gmail.com"
-                          required
-                        />
-                      </div>
+                    <div>
+                      <Label htmlFor="new-name" className="text-lg font-semibold text-[#1a365d]">
+                        الرمز أو الاسم المستعار
+                      </Label>
+                      <Input
+                        id="new-name"
+                        type="text"
+                        value={newClientForm.name}
+                        onChange={(e) => setNewClientForm({ ...newClientForm, name: e.target.value })}
+                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                        placeholder="أدخل اسمك"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email" className="text-lg font-semibold text-[#1a365d]">
+                        البريد الإلكتروني
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={newClientForm.email}
+                        onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
+                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
+                        placeholder="example@gmail.com"
+                        required
+                      />
+                    </div>
 
                     <div>
                       <Label htmlFor="new-question" className="text-lg font-semibold text-[#1a365d]">
@@ -234,7 +303,7 @@ const ConsultationFroms = () => {
                         value={newClientForm.question}
                         onChange={(e) => setNewClientForm({ ...newClientForm, question: e.target.value })}
                         className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                        placeholder="اكتب  وصف المشكلة مقيدة ب أربع سطور"
+                        placeholder="اكتب وصف المشكلة مقيدة ب أربع سطور"
                         maxLength={800}
                         required
                       />
@@ -246,10 +315,11 @@ const ConsultationFroms = () => {
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={isSubmitting}
                       className="w-full bg-[#f7b731] hover:bg-[#f7b731]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                     >
                       <Send className="w-6 h-6 mr-3" />
-                      إرسال الاستشارة
+                      {isSubmitting ? 'جاري الإرسال...' : 'إرسال الاستشارة'}
                     </Button>
                   </form>
                 </CardContent>

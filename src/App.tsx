@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import AboutUs from "./pages/AboutUS";
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import AdminAuth from "./components/AdminAuth";
 import Layout from "./components/Layout";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutUs />} />
         </Route>
+          <Route path="/admin" element={<AdminAuth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
