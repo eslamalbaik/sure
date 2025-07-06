@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,9 +8,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ConsultationFroms = () => {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const [existingClientForm, setExistingClientForm] = useState({
     name: '',
     fileNumber: '',
@@ -20,30 +24,76 @@ const ConsultationFroms = () => {
 
   const [newClientForm, setNewClientForm] = useState({
     name: '',
-    mobile: '',
-    company: '',
-    industry: '',
+    email: '',
     question: ''
   });
 
-  const handleExistingClientSubmit = (e: React.FormEvent) => {
+  const handleExistingClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Existing client consultation:', existingClientForm);
-    toast({
-      title: "تم إرسال الاستشارة بنجاح",
-      description: "سيتم التواصل معك في أقرب وقت ممكن"
-    });
-    setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('consultations')
+        .insert({
+          name: existingClientForm.name,
+          email: existingClientForm.mobile, // Using mobile field as contact
+          consultation_type: 'medical',
+          message: `رقم الملف: ${existingClientForm.fileNumber}\nتاريخ آخر زيارة: ${existingClientForm.lastVisit}\nرقم الجوال: ${existingClientForm.mobile}\n\nالاستشارة: ${existingClientForm.question}`,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "تم إرسال الاستشارة بنجاح",
+        description: "سيتم التواصل معك في أقرب وقت ممكن"
+      });
+      
+      setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+    } catch (error) {
+      console.error('Error submitting consultation:', error);
+      toast({
+        title: "خطأ في الإرسال",
+        description: "حدث خطأ أثناء إرسال الاستشارة. يرجى المحاولة مرة أخرى.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleNewClientSubmit = (e: React.FormEvent) => {
+  const handleNewClientSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('New client consultation:', newClientForm);
-    toast({
-      title: "تم إرسال الاستشارة بنجاح",
-      description: "سيتم التواصل معك في أقرب وقت ممكن"
-    });
-    setNewClientForm({ name: '', mobile: '', company: '', industry: '', question: '' });
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('consultations')
+        .insert({
+          name: newClientForm.name,
+          email: newClientForm.email,
+          consultation_type: 'personal',
+          message: newClientForm.question,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "تم إرسال الاستشارة بنجاح",
+        description: "سيتم التواصل معك في أقرب وقت ممكن"
+      });
+      
+      setNewClientForm({ name: '', email: '', question: '' });
+    } catch (error) {
+      console.error('Error submitting consultation:', error);
+      toast({
+        title: "خطأ في الإرسال",
+        description: "حدث خطأ أثناء إرسال الاستشارة. يرجى المحاولة مرة أخرى.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -58,7 +108,6 @@ const ConsultationFroms = () => {
               احصل على استشارة  من د. عبدالله السبيعي، المتخصص في الطب النفسي.
             </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
-
           </div>
 
           <Tabs dir="rtl" defaultValue="existing" className="w-full">
@@ -169,10 +218,11 @@ const ConsultationFroms = () => {
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={isSubmitting}
                       className="w-full bg-[#1a365d] hover:bg-[#1a365d]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                     >
                       <Send className="w-6 h-6 mr-3" />
-                      إرسال الاستشارة
+                      {isSubmitting ? 'جاري الإرسال...' : 'إرسال الاستشارة'}
                     </Button>
                   </form>
                 </CardContent>
@@ -217,8 +267,8 @@ const ConsultationFroms = () => {
                         <Input
                           id="email"
                           type="email"
-                          value={newClientForm.mobile}
-                          onChange={(e) => setNewClientForm({ ...newClientForm, mobile: e.target.value })}
+                          value={newClientForm.email}
+                          onChange={(e) => setNewClientForm({ ...newClientForm, email: e.target.value })}
                           className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
                           placeholder="exmaple@gmail.com"
                           required
@@ -246,10 +296,11 @@ const ConsultationFroms = () => {
                     <Button
                       type="submit"
                       size="lg"
+                      disabled={isSubmitting}
                       className="w-full bg-[#f7b731] hover:bg-[#f7b731]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                     >
                       <Send className="w-6 h-6 mr-3" />
-                      إرسال الاستشارة
+                      {isSubmitting ? 'جاري الإرسال...' : 'إرسال الاستشارة'}
                     </Button>
                   </form>
                 </CardContent>
