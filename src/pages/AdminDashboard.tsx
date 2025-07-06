@@ -5,11 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bell, Eye, FileText, Users, Clock, CheckCircle2 } from 'lucide-react';
+import { Bell, Eye, FileText, Users, Clock, CheckCircle2, Reply } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Tables } from '@/integrations/supabase/types';
+import ReplyDialog from '@/components/ReplyDialog';
 
 type Consultation = Tables<'consultations'>;
 
@@ -20,6 +21,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'medical' | 'personal'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'reviewed' | 'completed'>('all');
+  const [replyDialogOpen, setReplyDialogOpen] = useState(false);
+  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
 
   useEffect(() => {
     fetchConsultations();
@@ -152,6 +155,11 @@ const AdminDashboard = () => {
     ) : (
       <Users className="w-4 h-4 text-orange-600" />
     );
+  };
+
+  const openReplyDialog = (consultation: Consultation) => {
+    setSelectedConsultation(consultation);
+    setReplyDialogOpen(true);
   };
 
   const stats = {
@@ -295,10 +303,20 @@ const AdminDashboard = () => {
                         size="sm"
                         variant="outline"
                         onClick={() => updateConsultationStatus(consultation.id, 'reviewed')}
-                        disabled={consultation.status === 'reviewed'}
+                        disabled={consultation.status === 'reviewed' || consultation.status === 'completed'}
                       >
                         <Eye className="w-4 h-4 mr-2" />
                         تمت المراجعة
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => openReplyDialog(consultation)}
+                        disabled={consultation.status === 'completed'}
+                        className="bg-[#1a365d] text-white hover:bg-[#1a365d]/90"
+                      >
+                        <Reply className="w-4 h-4 mr-2" />
+                        إرسال رد
                       </Button>
                       <Button
                         size="sm"
@@ -323,6 +341,12 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
+
+      <ReplyDialog
+        consultation={selectedConsultation}
+        open={replyDialogOpen}
+        onOpenChange={setReplyDialogOpen}
+      />
     </div>
   );
 };
