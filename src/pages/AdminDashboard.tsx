@@ -1,16 +1,21 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Bell, Eye, FileText, Users, Clock, CheckCircle2, Reply } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Bell, Eye, FileText, Users, Clock, CheckCircle2, Reply, Search, Filter, Trash2, User, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { Tables } from '@/integrations/supabase/types';
 import ReplyDialog from '@/components/ReplyDialog';
+import AdminProfile from '@/components/AdminProfile';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 type Consultation = Tables<'consultations'>;
 
@@ -19,10 +24,13 @@ const AdminDashboard = () => {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [filteredConsultations, setFilteredConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'medical' | 'personal'>('all');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'reviewed' | 'completed'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterType, setFilterType] = useState<'all' | 'medical' | 'personal'>('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'pending' | 'reviewed' | 'completed'>('all');
   const [replyDialogOpen, setReplyDialogOpen] = useState(false);
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
+  const [selectedConsultations, setSelectedConsultations] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'consultations' | 'profile'>('dashboard');
 
   useEffect(() => {
     fetchConsultations();
@@ -31,7 +39,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     filterConsultations();
-  }, [consultations, filter, statusFilter]);
+  }, [consultations, searchTerm, filterType, filterStatus]);
 
   const fetchConsultations = async () => {
     try {
@@ -100,12 +108,23 @@ const AdminDashboard = () => {
   const filterConsultations = () => {
     let filtered = consultations;
 
-    if (filter !== 'all') {
-      filtered = filtered.filter(c => c.consultation_type === filter);
+    // تصفية حسب البحث
+    if (searchTerm) {
+      filtered = filtered.filter(c => 
+        c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.message.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
 
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(c => c.status === statusFilter);
+    // تصفية حسب النوع
+    if (filterType !== 'all') {
+      filtered = filtered.filter(c => c.consultation_type === filterType);
+    }
+
+    // تصفية حسب الحالة
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(c => c.status === filterStatus);
     }
 
     setFilteredConsultations(filtered);
@@ -134,6 +153,31 @@ const AdminDashboard = () => {
     }
   };
 
+  const deleteConsultations = async (ids: string[]) => {
+    try {
+      const { error } = await supabase
+        .from('consultations')
+        .delete()
+        .in('id', ids);
+
+      if (error) throw error;
+
+      toast({
+        title: "تم الحذف",
+        description: `تم حذف ${ids.length} استشارة بنجاح`
+      });
+
+      setSelectedConsultations([]);
+    } catch (error) {
+      console.error('Error deleting consultations:', error);
+      toast({
+        title: "خطأ في الحذف",
+        description: "حدث خطأ أثناء حذف الاستشارات",
+        variant: "destructive"
+      });
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     const statusConfig = {
       pending: { color: 'bg-yellow-100 text-yellow-800', text: 'في الانتظار' },
@@ -149,18 +193,29 @@ const AdminDashboard = () => {
     );
   };
 
-  const getTypeIcon = (type: string) => {
-    return type === 'medical' ? (
-      <FileText className="w-4 h-4 text-blue-600" />
-    ) : (
-      <Users className="w-4 h-4 text-orange-600" />
-    );
-  };
-
   const openReplyDialog = (consultation: Consultation) => {
     setSelectedConsultation(consultation);
     setReplyDialogOpen(true);
   };
+
+  // إحصائيات للرسوم البيانية
+  const chartData = consultations.reduce((acc, consultation) => {
+    const month = new Date(consultation.created_at).toLocaleDateString('ar-SA', { month: 'long' });
+    const existing = acc.find(item => item.month === month);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      acc.push({ month, count: 1 });
+    }
+    return acc;
+  }, [] as Array<{ month: string; count: number }>);
+
+  const pieData = [
+    { name: 'طبية', value: consultations.filter(c => c.consultation_type === 'medical').length },
+    { name: 'شخصية', value: consultations.filter(c => c.consultation_type === 'personal').length }
+  ];
+
+  const COLORS = ['#1a365d', '#f7b731'];
 
   const stats = {
     total: consultations.length,
@@ -181,165 +236,323 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6" dir="rtl">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-[#1a365d] mb-2">لوحة تحكم الإدارة</h1>
-          <p className="text-gray-600">إدارة الاستشارات الواردة</p>
+    <div className="min-h-screen bg-gray-50" dir="rtl">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-[#1a365d]">لوحة تحكم الإدارة</h1>
+            <div className="flex gap-4">
+              <Button
+                variant={activeTab === 'dashboard' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('dashboard')}
+                className="flex items-center gap-2"
+              >
+                <FileText className="w-4 h-4" />
+                الإحصائيات
+              </Button>
+              <Button
+                variant={activeTab === 'consultations' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('consultations')}
+                className="flex items-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                الاستشارات
+              </Button>
+              <Button
+                variant={activeTab === 'profile' ? 'default' : 'outline'}
+                onClick={() => setActiveTab('profile')}
+                className="flex items-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                الملف الشخصي
+              </Button>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">إجمالي الاستشارات</p>
-                  <p className="text-2xl font-bold text-[#1a365d]">{stats.total}</p>
-                </div>
-                <FileText className="w-8 h-8 text-[#1a365d]" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">في الانتظار</p>
-                  <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
-                </div>
-                <Clock className="w-8 h-8 text-yellow-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">استشارات طبية</p>
-                  <p className="text-2xl font-bold text-blue-600">{stats.medical}</p>
-                </div>
-                <FileText className="w-8 h-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">استشارات شخصية</p>
-                  <p className="text-2xl font-bold text-orange-600">{stats.personal}</p>
-                </div>
-                <Users className="w-8 h-8 text-orange-600" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <div className="flex gap-4 mb-6">
-          <Select value={filter} onValueChange={(value: any) => setFilter(value)}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="تصفية حسب النوع" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">جميع الأنواع</SelectItem>
-              <SelectItem value="medical">استشارات طبية</SelectItem>
-              <SelectItem value="personal">استشارات شخصية</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={statusFilter} onValueChange={(value: any) => setStatusFilter(value)}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="تصفية حسب الحالة" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">جميع الحالات</SelectItem>
-              <SelectItem value="pending">في الانتظار</SelectItem>
-              <SelectItem value="reviewed">تمت المراجعة</SelectItem>
-              <SelectItem value="completed">مكتملة</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Consultations List */}
-        <div className="space-y-4">
-          {filteredConsultations.length === 0 ? (
-            <Card>
-              <CardContent className="p-8 text-center">
-                <p className="text-gray-500">لا توجد استشارات متاحة</p>
-              </CardContent>
-            </Card>
-          ) : (
-            filteredConsultations.map((consultation) => (
-              <Card key={consultation.id} className="hover:shadow-lg transition-shadow">
+      <div className="max-w-7xl mx-auto p-6">
+        {activeTab === 'dashboard' && (
+          <div className="space-y-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <Card>
                 <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      {getTypeIcon(consultation.consultation_type)}
-                      <div>
-                        <h3 className="font-semibold text-lg">{consultation.name}</h3>
-                        <p className="text-sm text-gray-600">{consultation.email}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {getStatusBadge(consultation.status)}
-                      <Badge variant="outline">
-                        {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <p className="text-gray-700 leading-relaxed">{consultation.message}</p>
-                  </div>
-
                   <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => updateConsultationStatus(consultation.id, 'reviewed')}
-                        disabled={consultation.status === 'reviewed' || consultation.status === 'completed'}
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        تمت المراجعة
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => openReplyDialog(consultation)}
-                        disabled={consultation.status === 'completed'}
-                        className="bg-[#1a365d] text-white hover:bg-[#1a365d]/90"
-                      >
-                        <Reply className="w-4 h-4 mr-2" />
-                        إرسال رد
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => updateConsultationStatus(consultation.id, 'completed')}
-                        disabled={consultation.status === 'completed'}
-                      >
-                        <CheckCircle2 className="w-4 h-4 mr-2" />
-                        مكتملة
-                      </Button>
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">إجمالي الاستشارات</p>
+                      <p className="text-2xl font-bold text-[#1a365d]">{stats.total}</p>
                     </div>
-                    <p className="text-sm text-gray-500">
-                      {formatDistanceToNow(new Date(consultation.created_at), { 
-                        addSuffix: true, 
-                        locale: ar 
-                      })}
-                    </p>
+                    <FileText className="w-8 h-8 text-[#1a365d]" />
                   </div>
                 </CardContent>
               </Card>
-            ))
-          )}
-        </div>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">في الانتظار</p>
+                      <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
+                    </div>
+                    <Clock className="w-8 h-8 text-yellow-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">استشارات طبية</p>
+                      <p className="text-2xl font-bold text-blue-600">{stats.medical}</p>
+                    </div>
+                    <FileText className="w-8 h-8 text-blue-600" />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-600">استشارات شخصية</p>
+                      <p className="text-2xl font-bold text-orange-600">{stats.personal}</p>
+                    </div>
+                    <Users className="w-8 h-8 text-orange-600" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>الاستشارات الشهرية</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="count" fill="#1a365d" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>توزيع أنواع الاستشارات</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'consultations' && (
+          <div className="space-y-6">
+            {/* Filters */}
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <div className="relative">
+                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                      <Input
+                        placeholder="البحث بالاسم أو الإيميل أو المحتوى..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pr-10"
+                      />
+                    </div>
+                  </div>
+                  
+                  <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="تصفية حسب النوع" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">جميع الأنواع</SelectItem>
+                      <SelectItem value="medical">استشارات طبية</SelectItem>
+                      <SelectItem value="personal">استشارات شخصية</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="تصفية حسب الحالة" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">جميع الحالات</SelectItem>
+                      <SelectItem value="pending">في الانتظار</SelectItem>
+                      <SelectItem value="reviewed">تمت المراجعة</SelectItem>
+                      <SelectItem value="completed">مكتملة</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  {selectedConsultations.length > 0 && (
+                    <Button
+                      variant="destructive"
+                      onClick={() => deleteConsultations(selectedConsultations)}
+                      className="flex items-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      حذف المحدد ({selectedConsultations.length})
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Consultations Table */}
+            <Card>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-center">
+                        <input
+                          type="checkbox"
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedConsultations(filteredConsultations.map(c => c.id));
+                            } else {
+                              setSelectedConsultations([]);
+                            }
+                          }}
+                          checked={selectedConsultations.length === filteredConsultations.length && filteredConsultations.length > 0}
+                        />
+                      </TableHead>
+                      <TableHead>الاسم</TableHead>
+                      <TableHead>البريد الإلكتروني</TableHead>
+                      <TableHead>النوع</TableHead>
+                      <TableHead>الحالة</TableHead>
+                      <TableHead>التاريخ</TableHead>
+                      <TableHead>الإجراءات</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredConsultations.map((consultation) => (
+                      <TableRow key={consultation.id}>
+                        <TableCell className="text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedConsultations.includes(consultation.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedConsultations(prev => [...prev, consultation.id]);
+                              } else {
+                                setSelectedConsultations(prev => prev.filter(id => id !== consultation.id));
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium">{consultation.name}</TableCell>
+                        <TableCell>{consultation.email}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">
+                            {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(consultation.status)}</TableCell>
+                        <TableCell className="text-sm text-gray-500">
+                          {formatDistanceToNow(new Date(consultation.created_at), { 
+                            addSuffix: true, 
+                            locale: ar 
+                          })}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button size="sm" variant="outline">
+                                  <Eye className="w-4 h-4" />
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl" dir="rtl">
+                                <DialogHeader>
+                                  <DialogTitle>تفاصيل الاستشارة</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div>
+                                    <strong>الاسم:</strong> {consultation.name}
+                                  </div>
+                                  <div>
+                                    <strong>البريد الإلكتروني:</strong> {consultation.email}
+                                  </div>
+                                  <div>
+                                    <strong>نوع الاستشارة:</strong> {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
+                                  </div>
+                                  <div>
+                                    <strong>الرسالة:</strong>
+                                    <p className="mt-2 p-4 bg-gray-50 rounded-lg">{consultation.message}</p>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => openReplyDialog(consultation)}
+                              disabled={consultation.status === 'completed'}
+                              className="bg-[#1a365d] text-white hover:bg-[#1a365d]/90"
+                            >
+                              <Reply className="w-4 h-4" />
+                            </Button>
+
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => updateConsultationStatus(consultation.id, 'completed')}
+                              disabled={consultation.status === 'completed'}
+                            >
+                              <CheckCircle2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
+                {filteredConsultations.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
+                    لا توجد استشارات متاحة
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {activeTab === 'profile' && <AdminProfile />}
       </div>
 
       <ReplyDialog

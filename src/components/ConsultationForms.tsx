@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -15,6 +16,7 @@ const ConsultationFroms = () => {
   
   const [existingClientForm, setExistingClientForm] = useState({
     name: '',
+    email: '',
     fileNumber: '',
     mobile: '',
     question: '',
@@ -44,7 +46,7 @@ const ConsultationFroms = () => {
     try {
       const consultationData = {
         name: existingClientForm.name,
-        email: existingClientForm.mobile,
+        email: existingClientForm.email,
         consultation_type: 'medical',
         message: `رقم الملف: ${existingClientForm.fileNumber}\nتاريخ آخر زيارة: ${existingClientForm.lastVisit}\nرقم الجوال: ${existingClientForm.mobile}\n\nالاستشارة: ${existingClientForm.question}`,
       };
@@ -63,7 +65,7 @@ const ConsultationFroms = () => {
         description: "سيتم التواصل معك في أقرب وقت ممكن"
       });
       
-      setExistingClientForm({ name: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+      setExistingClientForm({ name: '', email: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
     } catch (error) {
       console.error('Error submitting consultation:', error);
       toast({
@@ -174,6 +176,22 @@ const ConsultationFroms = () => {
                         />
                       </div>
                       <div>
+                        <Label htmlFor="existing-email" className="text-lg font-semibold text-[#1a365d]">
+                          البريد الإلكتروني
+                        </Label>
+                        <Input
+                          id="existing-email"
+                          type="email"
+                          value={existingClientForm.email}
+                          onChange={(e) => setExistingClientForm({ ...existingClientForm, email: e.target.value })}
+                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                          placeholder="example@gmail.com"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
                         <Label htmlFor="file-number" className="text-lg font-semibold text-[#1a365d]">
                           رقم الملف
                         </Label>
@@ -187,19 +205,19 @@ const ConsultationFroms = () => {
                           required
                         />
                       </div>
-                    </div>
-                    <div>
-                      <Label htmlFor="last-visit" className="text-lg font-semibold text-[#1a365d]">
-                        تاريخ آخر زيارة
-                      </Label>
-                      <Input
-                        id="last-visit"
-                        type="date"
-                        value={existingClientForm.lastVisit}
-                        onChange={(e) => setExistingClientForm({ ...existingClientForm, lastVisit: e.target.value })}
-                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
-                        required
-                      />
+                      <div>
+                        <Label htmlFor="last-visit" className="text-lg font-semibold text-[#1a365d]">
+                          تاريخ آخر زيارة
+                        </Label>
+                        <Input
+                          id="last-visit"
+                          type="date"
+                          value={existingClientForm.lastVisit}
+                          onChange={(e) => setExistingClientForm({ ...existingClientForm, lastVisit: e.target.value })}
+                          className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
+                          required
+                        />
+                      </div>
                     </div>
                     <div>
                       <Label htmlFor="existing-mobile" className="text-lg font-semibold text-[#1a365d]">

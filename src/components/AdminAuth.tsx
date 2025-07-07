@@ -18,16 +18,23 @@ const AdminAuth = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    fullName: ''
   });
 
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // إنشاء الملف الشخصي عند تسجيل الدخول لأول مرة
+        if (event === 'SIGNED_IN' && session?.user) {
+          await createAdminProfile(session.user);
+        }
+        
         setLoading(false);
       }
     );
@@ -42,6 +49,35 @@ const AdminAuth = () => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const createAdminProfile = async (user: User) => {
+    try {
+      // التحقق من وجود الملف الشخصي
+      const { data: existingProfile } = await supabase
+        .from('admin_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!existingProfile) {
+        // إنشاء ملف شخصي جديد
+        const { error } = await supabase
+          .from('admin_profiles')
+          .insert({
+            user_id: user.id,
+            full_name: user.user_metadata?.full_name || '',
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          });
+
+        if (error) {
+          console.error('Error creating admin profile:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error in createAdminProfile:', error);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -93,7 +129,10 @@ const AdminAuth = () => {
         email: formData.email,
         password: formData.password,
         options: {
-          emailRedirectTo: redirectUrl
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: formData.fullName
+          }
         }
       });
 
@@ -162,22 +201,7 @@ const AdminAuth = () => {
   }
 
   if (user && session) {
-    return (
-      <div>
-        <div className="bg-white shadow-sm border-b p-4">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-xl font-semibold">لوحة تحكم الإدارة</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">{user.email}</span>
-              <Button variant="outline" onClick={handleLogout}>
-                تسجيل الخروج
-              </Button>
-            </div>
-          </div>
-        </div>
-        <AdminDashboard />
-      </div>
-    );
+    return <AdminDashboard />;
   }
 
   return (
@@ -196,6 +220,20 @@ const AdminAuth = () => {
         </CardHeader>
         <CardContent>
           <form onSubmit={authMode === 'login' ? handleLogin : handleSignup} className="space-y-4">
+            {authMode === 'signup' && (
+              <div>
+                <Label htmlFor="fullName">الاسم الكامل</Label>
+                <Input
+                  id="fullName"
+                  type="text"
+                  value={formData.fullName}
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  placeholder="الاسم الكامل"
+                  required
+                />
+              </div>
+            )}
+
             <div>
               <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input

@@ -1,14 +1,20 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3';
 
-const resend = new Resend("re_ZLvsDaN4_9RtxHJXyquPebvYbi5YeKdWp");
+const resend = new Resend("re_M3PU9ZZZ_GjjnBe16FeWVW7QrEf5CbKh8");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
+
+const supabaseUrl = "https://btwbkfguvamrcwfxjurh.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0d2JrZmd1dmFtcmN3ZnhqdXJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MDA0MDYsImV4cCI6MjA2NzM3NjQwNn0.uNC-X9ofnASf4ndqNwlWmrfWdGecynCPVF9Le1eCGWk";
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface ReplyRequest {
   consultation_id: string;
@@ -26,10 +32,23 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { consultation_id, user_email, user_name, reply_message, consultation_type }: ReplyRequest = await req.json();
 
+    // إضافة سجل الرد التلقائي لمنع الردود المتكررة
+    const { error: logError } = await supabase
+      .from('auto_reply_log')
+      .insert({
+        consultation_id,
+        user_email
+      });
+
+    if (logError && !logError.message.includes('duplicate key')) {
+      console.error('Error logging auto reply:', logError);
+    }
+
     const emailResponse = await resend.emails.send({
-      from: "د. عبدالله السبيعي <consultation@extrabitfree.com>>",
+      from: "د. عبدالله السبيعي <consult@extrabitfree.com>",
       to: [user_email],
       subject: `رد على استشارتك - ${consultation_type === 'medical' ? 'استشارة طبية' : 'استشارة شخصية'}`,
+      replyTo: "no-reply@extrabitfree.com",
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #1a365d, #2d5aa0); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
@@ -45,14 +64,14 @@ const handler = async (req: Request): Promise<Response> => {
               <p style="line-height: 1.6; color: #333; white-space: pre-wrap;">${reply_message}</p>
             </div>
             
-            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <p style="margin: 0; font-size: 14px; color: #1565c0;">
-                <strong>تنبيه:</strong> هذه رسالة أحادية الاتجاه ولا يمكن الرد عليها. إذا كنت بحاجة لاستشارة إضافية، يرجى زيارة الموقع وتقديم استشارة جديدة.
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 0; font-size: 14px; color: #856404;">
+                <strong>تنبيه مهم:</strong> هذه رسالة أحادية الاتجاه ولا يمكن الرد عليها. إذا كنت بحاجة لاستشارة إضافية، يرجى زيارة الموقع وتقديم استشارة جديدة.
               </p>
             </div>
             
             <div style="text-align: center; margin-top: 30px;">
-              <a href="https://your-website.com" style="background: #1a365d; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">زيارة الموقع</a>
+              <a href="https://extrabitfree.com" style="background: #1a365d; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">زيارة الموقع</a>
             </div>
             
             <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
