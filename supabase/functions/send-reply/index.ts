@@ -2,7 +2,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 
-const resend = new Resend("re_M3PU9ZZZ_GjjnBe16FeWVW7QrEf5CbKh8");
+const resend = new Resend("re_ZLvsDaN4_9RtxHJXyquPebvYbi5YeKdWp");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { consultation_id, user_email, user_name, reply_message, consultation_type }: ReplyRequest = await req.json();
 
     const emailResponse = await resend.emails.send({
-      from: "د. عبدالله السبيعي <onboarding@resend.dev>",
+      from: "د. عبدالله السبيعي <consultation@extrabitfree.com>>",
       to: [user_email],
       subject: `رد على استشارتك - ${consultation_type === 'medical' ? 'استشارة طبية' : 'استشارة شخصية'}`,
       html: `
