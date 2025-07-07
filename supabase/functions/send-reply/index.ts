@@ -1,9 +1,6 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.50.3';
-
-const resend = new Resend("re_M3PU9ZZZ_GjjnBe16FeWVW7QrEf5CbKh8");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -25,6 +22,44 @@ interface ReplyRequest {
   is_follow_up?: boolean;
 }
 
+const sendMailerSendEmail = async (to: string[], subject: string, html: string, from?: string) => {
+  const MAILERSEND_API_KEY = Deno.env.get("MAILERSEND_API_KEY");
+  
+  if (!MAILERSEND_API_KEY) {
+    throw new Error("MAILERSEND_API_KEY is not configured");
+  }
+
+  const response = await fetch("https://api.mailersend.com/v1/email", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${MAILERSEND_API_KEY}`,
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    body: JSON.stringify({
+      from: {
+        email: from || "consult@extrabitfree.com",
+        name: "د. عبدالله السبيعي"
+      },
+      to: to.map(email => ({ email })),
+      subject,
+      html,
+      reply_to: {
+        email: "auto-reply@extrabitfree.com",
+        name: "نظام الردود التلقائية"
+      }
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("MailerSend error:", errorText);
+    throw new Error(`MailerSend API error: ${response.status} - ${errorText}`);
+  }
+
+  return await response.json();
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -35,12 +70,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Sending reply:', { consultation_id, user_email, is_follow_up });
 
-    const emailResponse = await resend.emails.send({
-      from: "د. عبدالله السبيعي <consult@extrabitfree.com>",
-      to: [user_email],
-      subject: `${is_follow_up ? 'رد متابعة' : 'رد على استشارتك'} - ${consultation_type === 'medical' ? 'استشارة طبية' : 'استشارة شخصية'}`,
-      replyTo: "auto-reply@extrabitfree.com",
-      html: `
+    const emailResponse = await sendMailerSendEmail(
+      [user_email],
+      `${is_follow_up ? 'رد متابعة' : 'رد على استشارتك'} - ${consultation_type === 'medical' ? 'استشارة طبية' : 'استشارة شخصية'}`,
+      `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: linear-gradient(135deg, #1a365d, #2d5aa0); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
             <h1 style="margin: 0; font-size: 24px;">رد من د. عبدالله السبيعي</h1>
@@ -75,9 +108,10 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         </div>
       `,
-    });
+      "consult@extrabitfree.com"
+    );
 
-    console.log('Reply email sent successfully:', emailResponse);
+    console.log('Reply email sent successfully via MailerSend:', emailResponse);
 
     // تحديث حالة الاستشارة إذا لم تكن متابعة
     if (!is_follow_up) {

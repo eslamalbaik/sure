@@ -1,8 +1,5 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend("re_M3PU9ZZZ_GjjnBe16FeWVW7QrEf5CbKh8");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,6 +14,40 @@ interface NotificationRequest {
   message: string;
 }
 
+const sendMailerSendEmail = async (to: string[], subject: string, html: string, from?: string) => {
+  const MAILERSEND_API_KEY = Deno.env.get("MAILERSEND_API_KEY");
+  
+  if (!MAILERSEND_API_KEY) {
+    throw new Error("MAILERSEND_API_KEY is not configured");
+  }
+
+  const response = await fetch("https://api.mailersend.com/v1/email", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${MAILERSEND_API_KEY}`,
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    body: JSON.stringify({
+      from: {
+        email: from || "noreply@extrabitfree.com",
+        name: "د. عبدالله السبيعي"
+      },
+      to: to.map(email => ({ email })),
+      subject,
+      html
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("MailerSend error:", errorText);
+    throw new Error(`MailerSend API error: ${response.status} - ${errorText}`);
+  }
+
+  return await response.json();
+};
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -28,11 +59,10 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending notification for:', { name, email, consultation_type });
 
     // إرسال إيميل إشعار للإدارة
-    const adminEmailResponse = await resend.emails.send({
-      from: "نظام الاستشارات <noreply@extrabitfree.com>",
-      to: ["alsubaie.dr@gmail.com"],
-      subject: `استشارة جديدة من ${name}`,
-      html: `
+    const adminEmailResponse = await sendMailerSendEmail(
+      ["alsubaie.dr@gmail.com"],
+      `استشارة جديدة من ${name}`,
+      `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: #1a365d; color: white; padding: 20px; text-align: center;">
             <h2 style="margin: 0;">استشارة جديدة</h2>
@@ -51,14 +81,14 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         </div>
       `,
-    });
+      "noreply@extrabitfree.com"
+    );
 
     // إرسال إيميل تأكيد للمراجع
-    const confirmationEmailResponse = await resend.emails.send({
-      from: "د. عبدالله السبيعي <noreply@extrabitfree.com>",
-      to: [email],
-      subject: "تم استلام استشارتك بنجاح",
-      html: `
+    const confirmationEmailResponse = await sendMailerSendEmail(
+      [email],
+      "تم استلام استشارتك بنجاح",
+      `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <div style="background: #1a365d; color: white; padding: 30px; text-align: center;">
             <h1 style="margin: 0;">د. عبدالله السبيعي</h1>
@@ -85,9 +115,10 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
         </div>
       `,
-    });
+      "consult@extrabitfree.com"
+    );
 
-    console.log('Emails sent successfully:', { adminEmailResponse, confirmationEmailResponse });
+    console.log('Emails sent successfully via MailerSend:', { adminEmailResponse, confirmationEmailResponse });
 
     return new Response(JSON.stringify({ 
       success: true, 

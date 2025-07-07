@@ -5,9 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Phone, Camera, Key } from 'lucide-react';
+import { User, Mail, Phone, Key } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const AdminProfile = () => {
@@ -17,7 +16,6 @@ const AdminProfile = () => {
   const [profile, setProfile] = useState({
     full_name: '',
     phone: '',
-    avatar_url: '',
     email: ''
   });
   const [passwordForm, setPasswordForm] = useState({
@@ -43,13 +41,12 @@ const AdminProfile = () => {
         .single();
 
       if (profileError && profileError.code !== 'PGRST116') {
-        throw profileError;
+        console.error('Profile fetch error:', profileError);
       }
 
       setProfile({
         full_name: profileData?.full_name || '',
         phone: profileData?.phone || '',
-        avatar_url: profileData?.avatar_url || '',
         email: user.email || ''
       });
 
@@ -71,7 +68,7 @@ const AdminProfile = () => {
 
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not found');
+      if (!user) throw new Error('المستخدم غير موجود');
 
       // تحديث بيانات الملف الشخصي
       const { error: profileError } = await supabase
@@ -80,11 +77,15 @@ const AdminProfile = () => {
           user_id: user.id,
           full_name: profile.full_name,
           phone: profile.phone,
-          avatar_url: profile.avatar_url,
           updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
         });
 
-      if (profileError) throw profileError;
+      if (profileError) {
+        console.error('Profile update error:', profileError);
+        throw profileError;
+      }
 
       // تحديث الإيميل إذا تم تغييره
       if (profile.email !== user.email) {
@@ -92,7 +93,10 @@ const AdminProfile = () => {
           email: profile.email
         });
 
-        if (emailError) throw emailError;
+        if (emailError) {
+          console.error('Email update error:', emailError);
+          throw emailError;
+        }
 
         toast({
           title: "تحديث الإيميل",
@@ -109,7 +113,7 @@ const AdminProfile = () => {
       console.error('Error updating profile:', error);
       toast({
         title: "خطأ في التحديث",
-        description: error.message,
+        description: error.message || "حدث خطأ أثناء تحديث البيانات",
         variant: "destructive"
       });
     } finally {
@@ -124,6 +128,15 @@ const AdminProfile = () => {
       toast({
         title: "خطأ في كلمة المرور",
         description: "كلمات المرور الجديدة غير متطابقة",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (passwordForm.new_password.length < 6) {
+      toast({
+        title: "خطأ في كلمة المرور",
+        description: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
         variant: "destructive"
       });
       return;
@@ -148,46 +161,10 @@ const AdminProfile = () => {
       });
 
     } catch (error: any) {
+      console.error('Password update error:', error);
       toast({
         title: "خطأ في تحديث كلمة المرور",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not found');
-
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, file, { upsert: true });
-
-      if (uploadError) throw uploadError;
-
-      const { data } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
-
-      setProfile(prev => ({ ...prev, avatar_url: data.publicUrl }));
-
-      toast({
-        title: "تم رفع الصورة",
-        description: "تم رفع صورة الملف الشخصي بنجاح"
-      });
-
-    } catch (error: any) {
-      toast({
-        title: "خطأ في رفع الصورة",
-        description: error.message,
+        description: error.message || "حدث خطأ أثناء تحديث كلمة المرور",
         variant: "destructive"
       });
     }
@@ -228,6 +205,7 @@ const AdminProfile = () => {
                     onChange={(e) => setProfile(prev => ({ ...prev, full_name: e.target.value }))}
                     placeholder="أدخل اسمك الكامل"
                     className="mt-2"
+                    required
                   />
                 </div>
 
@@ -240,6 +218,7 @@ const AdminProfile = () => {
                     onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
                     placeholder="البريد الإلكتروني"
                     className="mt-2"
+                    required
                   />
                 </div>
 
@@ -266,44 +245,8 @@ const AdminProfile = () => {
           </Card>
         </div>
 
-        {/* الصورة الشخصية وتغيير كلمة المرور */}
+        {/* تغيير كلمة المرور */}
         <div className="space-y-6">
-          {/* الصورة الشخصية */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Camera className="w-5 h-5" />
-                الصورة الشخصية
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Avatar className="w-32 h-32 mx-auto mb-4">
-                <AvatarImage src={profile.avatar_url} alt="صورة شخصية" />
-                <AvatarFallback className="text-2xl">
-                  {profile.full_name ? profile.full_name.charAt(0) : 'د'}
-                </AvatarFallback>
-              </Avatar>
-
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarUpload}
-                className="hidden"
-                id="avatar-upload"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => document.getElementById('avatar-upload')?.click()}
-                className="w-full"
-              >
-                <Camera className="w-4 h-4 mr-2" />
-                تغيير الصورة
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* تغيير كلمة المرور */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -331,7 +274,9 @@ const AdminProfile = () => {
                         value={passwordForm.new_password}
                         onChange={(e) => setPasswordForm(prev => ({ ...prev, new_password: e.target.value }))}
                         required
+                        minLength={6}
                         className="mt-2"
+                        placeholder="أدخل كلمة مرور جديدة"
                       />
                     </div>
 
@@ -343,7 +288,9 @@ const AdminProfile = () => {
                         value={passwordForm.confirm_password}
                         onChange={(e) => setPasswordForm(prev => ({ ...prev, confirm_password: e.target.value }))}
                         required
+                        minLength={6}
                         className="mt-2"
+                        placeholder="أكد كلمة المرور الجديدة"
                       />
                     </div>
 

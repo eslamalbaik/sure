@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Bell, Eye, FileText, Users, Clock, CheckCircle2, Reply, Search, Filter, Trash2, User, Settings } from 'lucide-react';
+import { Bell, Eye, FileText, Users, Clock, CheckCircle2, Reply, Search, Filter, Trash2, User, Settings, RotateCcw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -31,6 +30,7 @@ const AdminDashboard = () => {
   const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
   const [selectedConsultations, setSelectedConsultations] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'consultations' | 'profile'>('dashboard');
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchConsultations();
@@ -98,6 +98,19 @@ const AdminDashboard = () => {
           );
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'consultations'
+        },
+        (payload) => {
+          setConsultations(prev => 
+            prev.filter(consultation => consultation.id !== payload.old.id)
+          );
+        }
+      )
       .subscribe();
 
     return () => {
@@ -108,7 +121,6 @@ const AdminDashboard = () => {
   const filterConsultations = () => {
     let filtered = consultations;
 
-    // تصفية حسب البحث
     if (searchTerm) {
       filtered = filtered.filter(c => 
         c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -117,12 +129,10 @@ const AdminDashboard = () => {
       );
     }
 
-    // تصفية حسب النوع
     if (filterType !== 'all') {
       filtered = filtered.filter(c => c.consultation_type === filterType);
     }
 
-    // تصفية حسب الحالة
     if (filterStatus !== 'all') {
       filtered = filtered.filter(c => c.status === filterStatus);
     }
@@ -154,6 +164,9 @@ const AdminDashboard = () => {
   };
 
   const deleteConsultations = async (ids: string[]) => {
+    if (deleting) return;
+    
+    setDeleting(true);
     try {
       const { error } = await supabase
         .from('consultations')
@@ -168,6 +181,9 @@ const AdminDashboard = () => {
       });
 
       setSelectedConsultations([]);
+      
+      // تحديث القائمة محلياً
+      setConsultations(prev => prev.filter(c => !ids.includes(c.id)));
     } catch (error) {
       console.error('Error deleting consultations:', error);
       toast({
@@ -175,6 +191,8 @@ const AdminDashboard = () => {
         description: "حدث خطأ أثناء حذف الاستشارات",
         variant: "destructive"
       });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -198,7 +216,6 @@ const AdminDashboard = () => {
     setReplyDialogOpen(true);
   };
 
-  // إحصائيات للرسوم البيانية
   const chartData = consultations.reduce((acc, consultation) => {
     const month = new Date(consultation.created_at).toLocaleDateString('ar-SA', { month: 'long' });
     const existing = acc.find(item => item.month === month);
@@ -420,10 +437,11 @@ const AdminDashboard = () => {
                     <Button
                       variant="destructive"
                       onClick={() => deleteConsultations(selectedConsultations)}
+                      disabled={deleting}
                       className="flex items-center gap-2"
                     >
                       <Trash2 className="w-4 h-4" />
-                      حذف المحدد ({selectedConsultations.length})
+                      {deleting ? 'جاري الحذف...' : `حذف المحدد (${selectedConsultations.length})`}
                     </Button>
                   )}
                 </div>
@@ -521,20 +539,31 @@ const AdminDashboard = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => openReplyDialog(consultation)}
-                              disabled={consultation.status === 'completed'}
                               className="bg-[#1a365d] text-white hover:bg-[#1a365d]/90"
                             >
                               <Reply className="w-4 h-4" />
                             </Button>
 
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => updateConsultationStatus(consultation.id, 'completed')}
-                              disabled={consultation.status === 'completed'}
-                            >
-                              <CheckCircle2 className="w-4 h-4" />
-                            </Button>
+                            {consultation.status === 'completed' ? (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateConsultationStatus(consultation.id, 'pending')}
+                                className="bg-orange-500 text-white hover:bg-orange-600"
+                                title="إعادة إلى غير مكتملة"
+                              >
+                                <RotateCcw className="w-4 h-4" />
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => updateConsultationStatus(consultation.id, 'completed')}
+                                className="bg-green-500 text-white hover:bg-green-600"
+                              >
+                                <CheckCircle2 className="w-4 h-4" />
+                              </Button>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
