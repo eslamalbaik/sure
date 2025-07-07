@@ -22,7 +22,9 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { user_email } = await req.json();
+    const { user_email, from_address } = await req.json();
+
+    console.log('Auto-reply triggered for:', { user_email, from_address });
 
     // التحقق من وجود رد تلقائي سابق
     const { data: existingReply } = await supabase
@@ -32,6 +34,7 @@ const handler = async (req: Request): Promise<Response> => {
       .limit(1);
 
     if (existingReply && existingReply.length > 0) {
+      console.log('Auto reply already sent to:', user_email);
       return new Response(JSON.stringify({ message: "Auto reply already sent" }), {
         status: 200,
         headers: {
@@ -42,31 +45,42 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "نظام الاستشارات <no-reply@extrabitfree.com>",
+      from: "نظام الردود التلقائية <auto-reply@extrabitfree.com>",
       to: [user_email],
       subject: "رد تلقائي - لا يمكن الرد على هذه الرسالة",
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
           <div style="background: #dc3545; color: white; padding: 20px; border-radius: 10px 10px 0 0; text-align: center;">
-            <h1 style="margin: 0; font-size: 20px;">رد تلقائي</h1>
+            <h1 style="margin: 0; font-size: 20px;">⚠️ رد تلقائي</h1>
           </div>
           
           <div style="background: #f8f9fa; padding: 30px; border-radius: 0 0 10px 10px;">
             <p style="font-size: 16px; margin-bottom: 20px;"><strong>عزيزي المراجع الكريم،</strong></p>
             
             <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 20px; border-radius: 8px; margin: 20px 0;">
-              <p style="margin: 0; font-size: 16px; color: #856404; line-height: 1.6;">
-                <strong>لا يمكن التواصل مع الدكتور مباشرة. يرجى تقديم استشارة جديدة لبدء محادثة جديدة.</strong>
+              <p style="margin: 0; font-size: 16px; color: #856404; line-height: 1.6; text-align: center;">
+                <strong>لا يمكن التواصل مع الدكتور مباشرة عبر الرد على هذا الإيميل</strong><br>
+                <strong>يرجى تقديم استشارة جديدة لبدء محادثة جديدة</strong>
               </p>
             </div>
             
-            <p style="color: #666; line-height: 1.6;">
+            <div style="background: #d1ecf1; border: 1px solid #bee5eb; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <p style="margin: 0; color: #0c5460; line-height: 1.6;">
+                <strong>كيفية التواصل:</strong><br>
+                • قم بزيارة الموقع الإلكتروني<br>
+                • أرسل استشارة جديدة<br>
+                • أو اتصل بنا مباشرة
+              </p>
+            </div>
+            
+            <p style="color: #666; line-height: 1.6; font-size: 14px;">
               هذا الإيميل مخصص لإرسال الردود من الدكتور فقط ولا يتم مراقبته للردود الواردة.
-              إذا كنت بحاجة لطرح سؤال جديد أو استشارة إضافية، يرجى زيارة الموقع وتقديم طلب جديد.
+              إذا كنت بحاجة لطرح سؤال جديد أو استشارة إضافية، يرجى استخدام الطرق المذكورة أعلاه.
             </p>
             
             <div style="text-align: center; margin-top: 30px;">
-              <a href="https://extrabitfree.com" style="background: #1a365d; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">تقديم استشارة جديدة</a>
+              <a href="https://extrabitfree.com" style="background: #1a365d; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block; margin-right: 10px;">تقديم استشارة جديدة</a>
+              <a href="tel:+966123456789" style="background: #28a745; color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; display: inline-block;">اتصل بنا</a>
             </div>
             
             <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
@@ -84,9 +98,11 @@ const handler = async (req: Request): Promise<Response> => {
     await supabase
       .from('auto_reply_log')
       .insert({
-        consultation_id: 'auto-reply',
+        consultation_id: 'auto-reply-' + Date.now(),
         user_email
       });
+
+    console.log('Auto-reply sent successfully:', emailResponse);
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
@@ -99,7 +115,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.error("Error sending auto reply:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      {
+    {
         status: 500,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       }

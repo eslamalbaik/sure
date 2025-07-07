@@ -4,7 +4,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Send, X } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Send, X, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Tables } from '@/integrations/supabase/types';
@@ -21,12 +22,15 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
   const { toast } = useToast();
   const [reply, setReply] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFollowUp, setIsFollowUp] = useState(false);
 
   const handleSendReply = async () => {
     if (!consultation || !reply.trim()) return;
 
     setIsSubmitting(true);
     try {
+      console.log('Sending reply to:', consultation.email);
+
       // Send reply email
       const { error } = await supabase.functions.invoke('send-reply', {
         body: {
@@ -34,29 +38,36 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
           user_email: consultation.email,
           user_name: consultation.name,
           reply_message: reply,
-          consultation_type: consultation.consultation_type
+          consultation_type: consultation.consultation_type,
+          is_follow_up: isFollowUp
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error sending reply:', error);
+        throw error;
+      }
 
-      // Update consultation status to completed
-      await supabase
-        .from('consultations')
-        .update({ 
-          status: 'completed',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', consultation.id);
+      // Update consultation status only if not a follow-up
+      if (!isFollowUp) {
+        await supabase
+          .from('consultations')
+          .update({ 
+            status: 'completed',
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', consultation.id);
+      }
 
       toast({
         title: "تم إرسال الرد بنجاح",
-        description: "تم إرسال ردك إلى المستخدم عبر البريد الإلكتروني"
+        description: `تم إرسال ${isFollowUp ? 'رد المتابعة' : 'الرد'} إلى المستخدم عبر البريد الإلكتروني`
       });
 
       setReply('');
+      setIsFollowUp(false);
       onOpenChange(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error sending reply:', error);
       toast({
         title: "خطأ في الإرسال",
@@ -74,7 +85,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Send className="w-5 h-5" />
-            رد على الاستشارة
+            {isFollowUp ? 'رد متابعة على الاستشارة' : 'رد على الاستشارة'}
           </DialogTitle>
           <DialogDescription>
             إرسال رد إلى {consultation?.name} ({consultation?.email})
@@ -88,15 +99,33 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
               <p className="text-gray-700 text-sm leading-relaxed">
                 {consultation.message}
               </p>
+              <div className="mt-2 text-xs text-gray-500">
+                الحالة: {consultation.status === 'pending' ? 'في الانتظار' : 
+                        consultation.status === 'reviewed' ? 'تمت المراجعة' : 'مكتملة'}
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2 space-x-reverse">
+              <Checkbox 
+                id="followUp" 
+                checked={isFollowUp}
+                onCheckedChange={(checked) => setIsFollowUp(checked as boolean)}
+              />
+              <Label htmlFor="followUp" className="flex items-center gap-2 cursor-pointer">
+                <MessageCircle className="w-4 h-4" />
+                هذا رد متابعة (لن يتم تغيير حالة الاستشارة)
+              </Label>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="reply">ردك على الاستشارة:</Label>
+              <Label htmlFor="reply">
+                {isFollowUp ? 'رد المتابعة:' : 'ردك على الاستشارة:'}
+              </Label>
               <Textarea
                 id="reply"
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
-                placeholder="اكتب ردك هنا..."
+                placeholder={isFollowUp ? "اكتب رد المتابعة هنا..." : "اكتب ردك هنا..."}
                 className="min-h-[150px]"
                 maxLength={2000}
               />
@@ -104,6 +133,15 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
                 {reply.length}/2000 حرف
               </p>
             </div>
+
+            {isFollowUp && (
+              <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                <p className="text-sm text-blue-700">
+                  ملاحظة: هذا رد متابعة ولن يؤثر على حالة الاستشارة الحالية. 
+                  يمكنك إرسال عدة ردود متابعة حسب الحاجة.
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -122,7 +160,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
             className="bg-[#1a365d] hover:bg-[#1a365d]/90"
           >
             <Send className="w-4 h-4 mr-2" />
-            {isSubmitting ? 'جاري الإرسال...' : 'إرسال الرد'}
+            {isSubmitting ? 'جاري الإرسال...' : (isFollowUp ? 'إرسال رد المتابعة' : 'إرسال الرد')}
           </Button>
         </DialogFooter>
       </DialogContent>
