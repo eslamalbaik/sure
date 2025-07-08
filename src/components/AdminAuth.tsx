@@ -8,27 +8,10 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 const AdminAuth = () => {
   const { toast } = useToast();
-  const { user, session, loading, handleLogin, handleSignup, handleLogout } = useAdminAuth();
-  const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+  const { user, session, loading, handleLogin, handleLogout } = useAdminAuth();
 
   const onLogin = async (email: string, password: string) => {
     await handleLogin(email, password);
-  };
-
-  const onSignup = async (email: string, password: string, fullName: string) => {
-    await handleSignup(email, password, fullName);
-  };
-
-  const onSignupWithValidation = async (email: string, password: string, confirmPassword: string, fullName: string) => {
-    if (password !== confirmPassword) {
-      toast({
-        title: "خطأ في كلمة المرور",
-        description: "كلمات المرور غير متطابقة",
-        variant: "destructive"
-      });
-      return;
-    }
-    await onSignup(email, password, fullName);
   };
 
   if (loading) {
@@ -41,10 +24,10 @@ const AdminAuth = () => {
 
   return (
     <AdminAuthForm
-      authMode={authMode}
-      onAuthModeChange={setAuthMode}
+      authMode="login"
+      onAuthModeChange={() => {}}
       onLogin={onLogin}
-      onSignup={(email, password, fullName) => onSignup(email, password, fullName)}
+      onSignup={() => {}}
       loading={loading}
     />
   );

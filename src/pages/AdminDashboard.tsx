@@ -7,7 +7,26 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Bell, Eye, FileText, Users, Clock, CheckCircle2, Reply, Search, Filter, Trash2, User, Settings, RotateCcw } from 'lucide-react';
+import { 
+  Bell, 
+  Eye, 
+  FileText, 
+  Users, 
+  Clock, 
+  CheckCircle2, 
+  Reply, 
+  Search, 
+  Filter, 
+  Trash2, 
+  User, 
+  Settings, 
+  RotateCcw,
+  LogOut,
+  Menu,
+  Home,
+  MessageSquare,
+  BarChart3
+} from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { formatDistanceToNow } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -15,8 +34,70 @@ import { Tables } from '@/integrations/supabase/types';
 import ReplyDialog from '@/components/ReplyDialog';
 import AdminProfile from '@/components/AdminProfile';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 type Consultation = Tables<'consultations'>;
+
+const AdminSidebar = () => {
+  const { handleLogout } = useAdminAuth();
+  
+  return (
+    <Sidebar className="w-64">
+      <SidebarHeader className="p-6">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#1a365d] rounded-lg flex items-center justify-center">
+            <Settings className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h2 className="font-bold text-lg text-[#1a365d]">شور للإستشارات</h2>
+            <p className="text-sm text-gray-600">لوحة الإدارة</p>
+          </div>
+        </div>
+      </SidebarHeader>
+      
+      <SidebarContent className="px-4">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="w-full text-right">
+              <Home className="w-5 h-5" />
+              <span>الرئيسية</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="w-full text-right">
+              <BarChart3 className="w-5 h-5" />
+              <span>الإحصائيات</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="w-full text-right">
+              <MessageSquare className="w-5 h-5" />
+              <span>الاستشارات</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton className="w-full text-right">
+              <User className="w-5 h-5" />
+              <span>الملف الشخصي</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4">
+        <Button 
+          variant="outline" 
+          className="w-full justify-start gap-2 text-red-600 border-red-200 hover:bg-red-50"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4" />
+          تسجيل الخروج
+        </Button>
+      </SidebarFooter>
+    </Sidebar>
+  );
+};
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -176,8 +257,8 @@ const AdminDashboard = () => {
       if (error) throw error;
 
       toast({
-        title: "تم الحذف",
-        description: `تم حذف ${ids.length} استشارة بنجاح`
+        title: "تم الحذف النهائي",
+        description: `تم حذف ${ids.length} استشارة نهائياً`,
       });
 
       setSelectedConsultations([]);
@@ -253,346 +334,390 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50" dir="rtl">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#1a365d]">لوحة تحكم الإدارة</h1>
-            <div className="flex flex-wrap gap-2 sm:gap-4">
-              <Button
-                variant={activeTab === 'dashboard' ? 'default' : 'outline'}
-                onClick={() => setActiveTab('dashboard')}
-                className="flex items-center gap-2 text-xs sm:text-sm"
-                size="sm"
-              >
-                <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
-                الإحصائيات
-              </Button>
-              <Button
-                variant={activeTab === 'consultations' ? 'default' : 'outline'}
-                onClick={() => setActiveTab('consultations')}
-                className="flex items-center gap-2 text-xs sm:text-sm"
-                size="sm"
-              >
-                <Users className="w-3 h-3 sm:w-4 sm:h-4" />
-                الاستشارات
-              </Button>
-              <Button
-                variant={activeTab === 'profile' ? 'default' : 'outline'}
-                onClick={() => setActiveTab('profile')}
-                className="flex items-center gap-2 text-xs sm:text-sm"
-                size="sm"
-              >
-                <User className="w-3 h-3 sm:w-4 sm:h-4" />
-                الملف الشخصي
-              </Button>
+    <SidebarProvider>
+      <div className="min-h-screen bg-gray-50 flex w-full" dir="rtl">
+        <AdminSidebar />
+        
+        <div className="flex-1 flex flex-col">
+          {/* Header */}
+          <div className="bg-white shadow-sm border-b">
+            <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <SidebarTrigger className="md:hidden" />
+                  <h1 className="text-xl sm:text-2xl font-bold text-[#1a365d]">لوحة تحكم الإدارة</h1>
+                </div>
+                <div className="flex flex-wrap gap-2 sm:gap-4">
+                  <Button
+                    variant={activeTab === 'dashboard' ? 'default' : 'outline'}
+                    onClick={() => setActiveTab('dashboard')}
+                    className="flex items-center gap-2 text-xs sm:text-sm"
+                    size="sm"
+                  >
+                    <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                    الإحصائيات
+                  </Button>
+                  <Button
+                    variant={activeTab === 'consultations' ? 'default' : 'outline'}
+                    onClick={() => setActiveTab('consultations')}
+                    className="flex items-center gap-2 text-xs sm:text-sm"
+                    size="sm"
+                  >
+                    <Users className="w-3 h-3 sm:w-4 sm:h-4" />
+                    الاستشارات
+                  </Button>
+                  <Button
+                    variant={activeTab === 'profile' ? 'default' : 'outline'}
+                    onClick={() => setActiveTab('profile')}
+                    className="flex items-center gap-2 text-xs sm:text-sm"
+                    size="sm"
+                  >
+                    <User className="w-3 h-3 sm:w-4 sm:h-4" />
+                    الملف الشخصي
+                  </Button>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div className="flex-1 w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            {activeTab === 'dashboard' && (
+              <div className="space-y-6">
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                  <Card>
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">إجمالي الاستشارات</p>
+                          <p className="text-xl sm:text-2xl font-bold text-[#1a365d]">{stats.total}</p>
+                        </div>
+                        <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-[#1a365d]" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">في الانتظار</p>
+                          <p className="text-xl sm:text-2xl font-bold text-yellow-600">{stats.pending}</p>
+                        </div>
+                        <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">استشارات طبية</p>
+                          <p className="text-xl sm:text-2xl font-bold text-blue-600">{stats.medical}</p>
+                        </div>
+                        <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-gray-600">استشارات شخصية</p>
+                          <p className="text-xl sm:text-2xl font-bold text-orange-600">{stats.personal}</p>
+                        </div>
+                        <Users className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>الاستشارات الشهرية</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <BarChart data={chartData}>
+                          <CartesianGrid strokeDasharray="3 3" />
+                          <XAxis dataKey="month" />
+                          <YAxis />
+                          <Tooltip />
+                          <Bar dataKey="count" fill="#1a365d" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>توزيع أنواع الاستشارات</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <ResponsiveContainer width="100%" height={300}>
+                        <PieChart>
+                          <Pie
+                            data={pieData}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            outerRadius={80}
+                            fill="#8884d8"
+                            dataKey="value"
+                          >
+                            {pieData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'consultations' && (
+              <div className="space-y-6">
+                {/* Filters */}
+                <Card>
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="flex-1">
+                        <div className="relative">
+                          <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <Input
+                            placeholder="البحث بالاسم أو الإيميل أو المحتوى..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pr-10"
+                          />
+                        </div>
+                      </div>
+                      
+                      <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
+                        <SelectTrigger className="w-full md:w-48">
+                          <SelectValue placeholder="تصفية حسب النوع" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">جميع الأنواع</SelectItem>
+                          <SelectItem value="medical">استشارات طبية</SelectItem>
+                          <SelectItem value="personal">استشارات شخصية</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
+                        <SelectTrigger className="w-full md:w-48">
+                          <SelectValue placeholder="تصفية حسب الحالة" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">جميع الحالات</SelectItem>
+                          <SelectItem value="pending">في الانتظار</SelectItem>
+                          <SelectItem value="reviewed">تمت المراجعة</SelectItem>
+                          <SelectItem value="completed">مكتملة</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      {selectedConsultations.length > 0 && (
+                        <Button
+                          variant="destructive"
+                          onClick={() => deleteConsultations(selectedConsultations)}
+                          disabled={deleting}
+                          className="flex items-center gap-2 w-full md:w-auto"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          {deleting ? 'جاري الحذف...' : `حذف نهائي (${selectedConsultations.length})`}
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Consultations Table */}
+                <Card>
+                  <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="text-center w-12">
+                              <input
+                                type="checkbox"
+                                checked={selectedConsultations.length === filteredConsultations.length && filteredConsultations.length > 0}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedConsultations(filteredConsultations.map(c => c.id));
+                                  } else {
+                                    setSelectedConsultations([]);
+                                  }
+                                }}
+                                className="rounded"
+                              />
+                            </TableHead>
+                            <TableHead className="text-right">الاسم</TableHead>
+                            <TableHead className="text-right hidden sm:table-cell">النوع</TableHead>
+                            <TableHead className="text-right hidden md:table-cell">الحالة</TableHead>
+                            <TableHead className="text-right hidden lg:table-cell">التاريخ</TableHead>
+                            <TableHead className="text-center">الإجراءات</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {filteredConsultations.map((consultation) => (
+                            <TableRow key={consultation.id}>
+                              <TableCell className="text-center">
+                                <input
+                                  type="checkbox"
+                                  checked={selectedConsultations.includes(consultation.id)}
+                                  onChange={(e) => {
+                                    if (e.target.checked) {
+                                      setSelectedConsultations([...selectedConsultations, consultation.id]);
+                                    } else {
+                                      setSelectedConsultations(selectedConsultations.filter(id => id !== consultation.id));
+                                    }
+                                  }}
+                                  className="rounded"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <div>
+                                  <div className="font-medium">{consultation.name}</div>
+                                  <div className="text-sm text-gray-500 truncate max-w-[200px]">{consultation.email}</div>
+                                </div>
+                              </TableCell>
+                              <TableCell className="hidden sm:table-cell">
+                                <Badge variant={consultation.consultation_type === 'medical' ? 'default' : 'secondary'}>
+                                  {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {getStatusBadge(consultation.status)}
+                              </TableCell>
+                              <TableCell className="hidden lg:table-cell text-sm text-gray-600">
+                                {formatDistanceToNow(new Date(consultation.created_at), { addSuffix: true, locale: ar })}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button variant="outline" size="sm" className="flex items-center gap-1">
+                                        <Eye className="w-3 h-3" />
+                                        <span className="hidden sm:inline">عرض</span>
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" dir="rtl">
+                                      <DialogHeader>
+                                        <DialogTitle>تفاصيل الاستشارة</DialogTitle>
+                                      </DialogHeader>
+                                      <div className="space-y-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                          <div>
+                                            <label className="text-sm font-medium">الاسم:</label>
+                                            <p className="text-sm">{consultation.name}</p>
+                                          </div>
+                                          <div>
+                                            <label className="text-sm font-medium">البريد الإلكتروني:</label>
+                                            <p className="text-sm">{consultation.email}</p>
+                                          </div>
+                                          <div>
+                                            <label className="text-sm font-medium">نوع الاستشارة:</label>
+                                            <p className="text-sm">
+                                              {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
+                                            </p>
+                                          </div>
+                                          <div>
+                                            <label className="text-sm font-medium">الحالة:</label>
+                                            <div className="mt-1">
+                                              {getStatusBadge(consultation.status)}
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <label className="text-sm font-medium">الرسالة:</label>
+                                          <p className="text-sm mt-1 p-3 bg-gray-50 rounded-md whitespace-pre-wrap">
+                                            {consultation.message}
+                                          </p>
+                                        </div>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600">
+                                          <div>
+                                            <label className="font-medium">تاريخ الإنشاء:</label>
+                                            <p>{new Date(consultation.created_at).toLocaleString('ar-SA')}</p>
+                                          </div>
+                                          <div>
+                                            <label className="font-medium">آخر تحديث:</label>
+                                            <p>{new Date(consultation.updated_at).toLocaleString('ar-SA')}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </DialogContent>
+                                  </Dialog>
+
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => openReplyDialog(consultation)}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <Reply className="w-3 h-3" />
+                                    <span className="hidden sm:inline">رد</span>
+                                  </Button>
+
+                                  <Select
+                                    value={consultation.status}
+                                    onValueChange={(value) => updateConsultationStatus(consultation.id, value as any)}
+                                  >
+                                    <SelectTrigger className="w-16 sm:w-24 h-8">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="pending">انتظار</SelectItem>
+                                      <SelectItem value="reviewed">مراجعة</SelectItem>
+                                      <SelectItem value="completed">مكتملة</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => deleteConsultations([consultation.id])}
+                                    disabled={deleting}
+                                    className="flex items-center gap-1"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                    <span className="hidden sm:inline">حذف</span>
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {activeTab === 'profile' && (
+              <AdminProfile />
+            )}
           </div>
         </div>
-      </div>
 
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        {activeTab === 'dashboard' && (
-          <div className="space-y-6">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">إجمالي الاستشارات</p>
-                      <p className="text-2xl font-bold text-[#1a365d]">{stats.total}</p>
-                    </div>
-                    <FileText className="w-8 h-8 text-[#1a365d]" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">في الانتظار</p>
-                      <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
-                    </div>
-                    <Clock className="w-8 h-8 text-yellow-600" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">استشارات طبية</p>
-                      <p className="text-2xl font-bold text-blue-600">{stats.medical}</p>
-                    </div>
-                    <FileText className="w-8 h-8 text-blue-600" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">استشارات شخصية</p>
-                      <p className="text-2xl font-bold text-orange-600">{stats.personal}</p>
-                    </div>
-                    <Users className="w-8 h-8 text-orange-600" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Charts */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>الاستشارات الشهرية</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#1a365d" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>توزيع أنواع الاستشارات</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+        {selectedConsultation && (
+          <ReplyDialog
+            consultation={selectedConsultation}
+            open={replyDialogOpen}
+            onOpenChange={setReplyDialogOpen}
+          />
         )}
-
-        {activeTab === 'consultations' && (
-          <div className="space-y-6">
-            {/* Filters */}
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <Input
-                        placeholder="البحث بالاسم أو الإيميل أو المحتوى..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pr-10"
-                      />
-                    </div>
-                  </div>
-                  
-                  <Select value={filterType} onValueChange={(value: any) => setFilterType(value)}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="تصفية حسب النوع" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">جميع الأنواع</SelectItem>
-                      <SelectItem value="medical">استشارات طبية</SelectItem>
-                      <SelectItem value="personal">استشارات شخصية</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  <Select value={filterStatus} onValueChange={(value: any) => setFilterStatus(value)}>
-                    <SelectTrigger className="w-48">
-                      <SelectValue placeholder="تصفية حسب الحالة" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">جميع الحالات</SelectItem>
-                      <SelectItem value="pending">في الانتظار</SelectItem>
-                      <SelectItem value="reviewed">تمت المراجعة</SelectItem>
-                      <SelectItem value="completed">مكتملة</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {selectedConsultations.length > 0 && (
-                    <Button
-                      variant="destructive"
-                      onClick={() => deleteConsultations(selectedConsultations)}
-                      disabled={deleting}
-                      className="flex items-center gap-2"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      {deleting ? 'جاري الحذف...' : `حذف المحدد (${selectedConsultations.length})`}
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Consultations Table */}
-            <Card>
-              <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="text-center">
-                        <input
-                          type="checkbox"
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedConsultations(filteredConsultations.map(c => c.id));
-                            } else {
-                              setSelectedConsultations([]);
-                            }
-                          }}
-                          checked={selectedConsultations.length === filteredConsultations.length && filteredConsultations.length > 0}
-                        />
-                      </TableHead>
-                      <TableHead>الاسم</TableHead>
-                      <TableHead>البريد الإلكتروني</TableHead>
-                      <TableHead>النوع</TableHead>
-                      <TableHead>الحالة</TableHead>
-                      <TableHead>التاريخ</TableHead>
-                      <TableHead>الإجراءات</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredConsultations.map((consultation) => (
-                      <TableRow key={consultation.id}>
-                        <TableCell className="text-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedConsultations.includes(consultation.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedConsultations(prev => [...prev, consultation.id]);
-                              } else {
-                                setSelectedConsultations(prev => prev.filter(id => id !== consultation.id));
-                              }
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell className="font-medium">{consultation.name}</TableCell>
-                        <TableCell>{consultation.email}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline">
-                            {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{getStatusBadge(consultation.status)}</TableCell>
-                        <TableCell className="text-sm text-gray-500">
-                          {formatDistanceToNow(new Date(consultation.created_at), { 
-                            addSuffix: true, 
-                            locale: ar 
-                          })}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button size="sm" variant="outline">
-                                  <Eye className="w-4 h-4" />
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-2xl" dir="rtl">
-                                <DialogHeader>
-                                  <DialogTitle>تفاصيل الاستشارة</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div>
-                                    <strong>الاسم:</strong> {consultation.name}
-                                  </div>
-                                  <div>
-                                    <strong>البريد الإلكتروني:</strong> {consultation.email}
-                                  </div>
-                                  <div>
-                                    <strong>نوع الاستشارة:</strong> {consultation.consultation_type === 'medical' ? 'طبية' : 'شخصية'}
-                                  </div>
-                                  <div>
-                                    <strong>الرسالة:</strong>
-                                    <p className="mt-2 p-4 bg-gray-50 rounded-lg">{consultation.message}</p>
-                                  </div>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => openReplyDialog(consultation)}
-                              className="bg-[#1a365d] text-white hover:bg-[#1a365d]/90"
-                            >
-                              <Reply className="w-4 h-4" />
-                            </Button>
-
-                            {consultation.status === 'completed' ? (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateConsultationStatus(consultation.id, 'pending')}
-                                className="bg-orange-500 text-white hover:bg-orange-600"
-                                title="إعادة إلى غير مكتملة"
-                              >
-                                <RotateCcw className="w-4 h-4" />
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateConsultationStatus(consultation.id, 'completed')}
-                                className="bg-green-500 text-white hover:bg-green-600"
-                              >
-                                <CheckCircle2 className="w-4 h-4" />
-                              </Button>
-                            )}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-
-                {filteredConsultations.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    لا توجد استشارات متاحة
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {activeTab === 'profile' && <AdminProfile />}
       </div>
-
-      <ReplyDialog
-        consultation={selectedConsultation}
-        open={replyDialogOpen}
-        onOpenChange={setReplyDialogOpen}
-      />
-    </div>
+    </SidebarProvider>
   );
 };
 

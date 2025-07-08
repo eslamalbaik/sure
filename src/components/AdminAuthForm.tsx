@@ -22,8 +22,8 @@ const AdminAuthForm = ({
   loading 
 }: AdminAuthFormProps) => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: 'eslamahmad2000t@gmail.com',
+    password: '123456',
     confirmPassword: '',
     fullName: ''
   });
@@ -114,23 +114,6 @@ const AdminAuthForm = ({
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {authMode === 'signup' && (
-              <div>
-                <Label htmlFor="fullName">الاسم الكامل</Label>
-                <Input
-                  id="fullName"
-                  type="text"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  placeholder="الاسم الكامل"
-                  className={errors.fullName ? 'border-red-500' : ''}
-                />
-                {errors.fullName && (
-                  <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
-                )}
-              </div>
-            )}
-
             <div>
               <Label htmlFor="email">البريد الإلكتروني</Label>
               <Input
@@ -140,6 +123,7 @@ const AdminAuthForm = ({
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="admin@example.com"
                 className={errors.email ? 'border-red-500' : ''}
+                disabled
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -156,11 +140,13 @@ const AdminAuthForm = ({
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="كلمة المرور"
                   className={`pr-10 ${errors.password ? 'border-red-500' : ''}`}
+                  disabled
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  disabled
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -169,32 +155,6 @@ const AdminAuthForm = ({
                 <p className="text-red-500 text-sm mt-1">{errors.password}</p>
               )}
             </div>
-
-            {authMode === 'signup' && (
-              <div>
-                <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
-                <div className="relative">
-                  <Input
-                    id="confirmPassword"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    value={formData.confirmPassword}
-                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                    placeholder="تأكيد كلمة المرور"
-                    className={`pr-10 ${errors.confirmPassword ? 'border-red-500' : ''}`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
-                )}
-              </div>
-            )}
 
             <Button 
               type="submit" 
@@ -208,25 +168,12 @@ const AdminAuthForm = ({
                 </>
               ) : (
                 <>
-                  {authMode === 'login' ? <LogIn className="w-4 h-4" /> : <UserPlus className="w-4 h-4" />}
-                  {authMode === 'login' ? 'تسجيل الدخول' : 'إنشاء حساب'}
+                  <LogIn className="w-4 h-4" />
+                  تسجيل الدخول
                 </>
               )}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <Button
-              variant="link"
-              onClick={() => handleModeChange(authMode === 'login' ? 'signup' : 'login')}
-              className="text-[#1a365d] hover:text-[#1a365d]/80"
-            >
-              {authMode === 'login' 
-                ? 'ليس لديك حساب؟ إنشاء حساب جديد' 
-                : 'لديك حساب؟ تسجيل الدخول'
-              }
-            </Button>
-          </div>
         </CardContent>
       </Card>
     </div>
