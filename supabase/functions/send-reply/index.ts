@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "npm:resend@2.0.0";
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.50.3/+esm";
-import { useState } from "react";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,7 +13,6 @@ const resend = new Resend(RESEND_API_KEY);
 const supabaseUrl = "https://btwbkfguvamrcwfxjurh.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0d2JrZmd1dmFtcmN3ZnhqdXJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MDA0MDYsImV4cCI6MjA2NzM3NjQwNn0.uNC-X9ofnASf4ndqNwlWmrfWdGecynCPVF9Le1eCGWk";
 const supabase = createClient(supabaseUrl, supabaseKey);
-const [replyMessage, setReplyMessage] = useState("");
 
 interface ReplyRequest {
   consultation_id: string;
