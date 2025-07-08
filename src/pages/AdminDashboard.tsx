@@ -256,32 +256,35 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-gray-50" dir="rtl">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-[#1a365d]">لوحة تحكم الإدارة</h1>
-            <div className="flex gap-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1a365d]">لوحة تحكم الإدارة</h1>
+            <div className="flex flex-wrap gap-2 sm:gap-4">
               <Button
                 variant={activeTab === 'dashboard' ? 'default' : 'outline'}
                 onClick={() => setActiveTab('dashboard')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-xs sm:text-sm"
+                size="sm"
               >
-                <FileText className="w-4 h-4" />
+                <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
                 الإحصائيات
               </Button>
               <Button
                 variant={activeTab === 'consultations' ? 'default' : 'outline'}
                 onClick={() => setActiveTab('consultations')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-xs sm:text-sm"
+                size="sm"
               >
-                <Users className="w-4 h-4" />
+                <Users className="w-3 h-3 sm:w-4 sm:h-4" />
                 الاستشارات
               </Button>
               <Button
                 variant={activeTab === 'profile' ? 'default' : 'outline'}
                 onClick={() => setActiveTab('profile')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 text-xs sm:text-sm"
+                size="sm"
               >
-                <User className="w-4 h-4" />
+                <User className="w-3 h-3 sm:w-4 sm:h-4" />
                 الملف الشخصي
               </Button>
             </div>
@@ -289,7 +292,7 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
             {/* Stats Cards */}

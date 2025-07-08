@@ -337,7 +337,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #dee2e6;">
               <p style="color: #6c757d; font-size: 12px; margin: 0;">
                 هذه رسالة تلقائية من نظام الاستشارات<br>
-                د. عبدالله السبيعي - استشاري الطب النفسي
+                شور للإستشارات - منصة الاستشارات المتخصصة
               </p>
             </div>
           </div>
