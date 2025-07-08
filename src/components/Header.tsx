@@ -83,12 +83,12 @@ useEffect(() => {
             >
               المدونة
             </button>
-            <a href="/admin">
+            {/* <a href="/admin">
               <button className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium flex items-center gap-2">
                 <Shield className="w-4 h-4" />
                 الإدارة
               </button>
-            </a>
+            </a> */}
           </nav>
 
           {/* Contact Info */}
@@ -149,12 +149,12 @@ useEffect(() => {
               >
                 المدونة
               </button>
-              <a href="/admin">
+              {/* <a href="/admin">
                 <button className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors flex items-center gap-2">
                   <Shield className="w-4 h-4" />
                   الإدارة
                 </button>
-              </a>
+              </a> */}
             </nav>
           </div>
         )}

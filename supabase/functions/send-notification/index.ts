@@ -227,7 +227,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "نظام الاستشارات <onboarding@resend.dev>",
-      to: ["admin@alsubaie.com"],
+      to: ["onboarding@resend.dev"],
       subject: `استشارة جديدة من ${name}`,
       html: `
         <div dir="rtl" style="font-family: Arial, sans-serif;">
