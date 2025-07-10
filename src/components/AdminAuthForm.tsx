@@ -123,7 +123,6 @@ const AdminAuthForm = ({
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 placeholder="admin@example.com"
                 className={errors.email ? 'border-red-500' : ''}
-                disabled
               />
               {errors.email && (
                 <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -140,13 +139,11 @@ const AdminAuthForm = ({
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="كلمة المرور"
                   className={`pr-10 ${errors.password ? 'border-red-500' : ''}`}
-                  disabled
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                  disabled
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

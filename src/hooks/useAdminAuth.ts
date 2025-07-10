@@ -11,35 +11,40 @@ export const useAdminAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('Auth state changed:', event, session);
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // إنشاء الملف الشخصي عند تسجيل الدخول لأول مرة
-        if (event === 'SIGNED_IN' && session?.user) {
-          setTimeout(() => {
-            createAdminProfile(session.user);
-          }, 100);
+        console.log('Auth state changed:', event);
+        if (event === 'SIGNED_OUT') {
+          setUser(null);
+          setSession(null);
         }
-        
-        setLoading(false);
       }
     );
 
-    // Check for existing session
     const initializeAuth = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error('Error getting session:', error);
-        } else {
-          console.log('Current session:', session);
-          setSession(session);
-          setUser(session?.user ?? null);
+        if (error || !session) {
+          setUser(null);
+          setSession(null);
+          return;
         }
+
+        // ❌ ما نسجلش اليوزر على طول غير لما نتحقق من إنه أدمن
+        const { data: isAdmin } = await supabase
+          .from('admin_users')
+          .select('*')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (isAdmin) {
+          setSession(session);
+          setUser(session.user);
+        } else {
+          setSession(null);
+          setUser(null);
+        }
+
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
@@ -52,86 +57,64 @@ export const useAdminAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const createAdminProfile = async (user: User) => {
-    try {
-      console.log('Creating admin profile for user:', user.id);
-      
-      // التحقق من وجود الملف الشخصي
-      const { data: existingProfile, error: fetchError } = await supabase
-        .from('admin_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (fetchError) {
-        console.error('Error fetching admin profile:', fetchError);
-        return;
-      }
-
-      if (!existingProfile) {
-        // إنشاء ملف شخصي جديد
-        const { error: insertError } = await supabase
-          .from('admin_profiles')
-          .insert({
-            user_id: user.id,
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || '',
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          });
-
-        if (insertError) {
-          console.error('Error creating admin profile:', insertError);
-        } else {
-          console.log('Admin profile created successfully');
-        }
-      }
-    } catch (error) {
-      console.error('Error in createAdminProfile:', error);
-    }
-  };
-
   const handleLogin = async (email: string, password: string) => {
     setLoading(true);
-
     try {
-      console.log('Attempting login with:', email);
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password,
       });
 
-      if (error) {
-        console.error('Login error:', error);
-        throw error;
+      if (authError || !authData?.user) {
+        throw new Error('بيانات الدخول غير صحيحة');
       }
 
-      console.log('Login successful:', data);
-      
+      const user = authData.user;
+
+      const { data: isAdmin, error: adminCheckError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (adminCheckError || !isAdmin) {
+        throw new Error("هذا الحساب غير مسجّل كأدمن");
+      }
+
+      const { data: allAdmins } = await supabase
+        .from('admin_users')
+        .select('user_id')
+        .eq('role', 'admin');
+
+      if (!allAdmins || allAdmins.length !== 1 || allAdmins[0].user_id !== user.id) {
+        throw new Error("عدد الأدمنات غير مسموح أو الحساب ليس الأدمن الوحيد");
+      }
+
+      setUser(user);
+      const { data: sessionData } = await supabase.auth.getSession();
+      setSession(sessionData.session);
+
       toast({
         title: "تم تسجيل الدخول بنجاح",
         description: "مرحباً بك في لوحة التحكم"
       });
 
       return { success: true };
+
     } catch (error: any) {
-      console.error('Login error:', error);
-      const errorMessage = error.message === 'Invalid login credentials' 
-        ? 'بيانات الدخول غير صحيحة' 
-        : error.message;
-      
       toast({
         title: "خطأ في تسجيل الدخول",
-        description: errorMessage,
+        description: error.message || "حدث خطأ غير متوقع",
         variant: "destructive"
       });
-      
-      return { success: false, error: errorMessage };
+
+      return { success: false, error: error.message };
     } finally {
       setLoading(false);
     }
   };
 
+  // باقي الفانكشنات (handleSignup, handleLogout) زي ما هي شغالة تمام
   const handleSignup = async (email: string, password: string, fullName: string) => {
     setLoading(true);
 
@@ -226,6 +209,7 @@ export const useAdminAuth = () => {
     }
   };
 
+
   return {
     user,
     session,
@@ -235,3 +219,4 @@ export const useAdminAuth = () => {
     handleLogout
   };
 };
+

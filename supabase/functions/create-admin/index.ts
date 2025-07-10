@@ -63,8 +63,8 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-const supabaseUrl = "https://btwbkfguvamrcwfxjurh.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0d2JrZmd1dmFtcmN3ZnhqdXJoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MDA0MDYsImV4cCI6MjA2NzM3NjQwNn0.uNC-X9ofnASf4ndqNwlWmrfWdGecynCPVF9Le1eCGWk";
+const supabaseUrl = "https://rragtzqmlsbwlkpcioql.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyYWd0enFtbHNid2xrcGNpb3FsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIwNjE3NzMsImV4cCI6MjA2NzYzNzc3M30.eTxQwbz8q9DVU2ujTCbYxWSJ7VmB84Sfg-qEIkx3H4Y";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
