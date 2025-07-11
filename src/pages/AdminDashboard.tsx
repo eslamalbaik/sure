@@ -39,65 +39,6 @@ import { useAdminAuth } from '@/hooks/useAdminAuth';
 
 type Consultation = Tables<'consultations'>;
 
-const AdminSidebar = () => {
-  const { handleLogout } = useAdminAuth();
-  
-  return (
-    <Sidebar className="w-64">
-      <SidebarHeader className="p-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#1a365d] rounded-lg flex items-center justify-center">
-            <Settings className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h2 className="font-bold text-lg text-[#1a365d]">شور للإستشارات</h2>
-            <p className="text-sm text-gray-600">لوحة الإدارة</p>
-          </div>
-        </div>
-      </SidebarHeader>
-      
-      <SidebarContent className="px-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="w-full text-right">
-              <Home className="w-5 h-5" />
-              <span>الرئيسية</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="w-full text-right">
-              <BarChart3 className="w-5 h-5" />
-              <span>الإحصائيات</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="w-full text-right">
-              <MessageSquare className="w-5 h-5" />
-              <span>الاستشارات</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="w-full text-right">
-              <User className="w-5 h-5" />
-              <span>الملف الشخصي</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarContent>
-
-      <SidebarFooter className="p-4">
-        <Button 
-          variant="outline" 
-          className="w-full justify-start gap-2 text-red-600 border-red-200 hover:bg-red-50"
-          onClick={handleLogout}
-        >
-          <LogOut className="w-4 h-4" />
-          تسجيل الخروج
-        </Button>
-      </SidebarFooter>
-    </Sidebar>
-  );
-};
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -314,6 +255,7 @@ const AdminDashboard = () => {
   ];
 
   const COLORS = ['#1a365d', '#f7b731'];
+  const { handleLogout } = useAdminAuth();
 
   const stats = {
     total: consultations.length,
@@ -336,7 +278,6 @@ const AdminDashboard = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-gray-50 flex w-full" dir="rtl">
-        <AdminSidebar />
         
         <div className="flex-1 flex flex-col">
           {/* Header */}
@@ -357,6 +298,7 @@ const AdminDashboard = () => {
                     <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
                     الإحصائيات
                   </Button>
+                  
                   <Button
                     variant={activeTab === 'consultations' ? 'default' : 'outline'}
                     onClick={() => setActiveTab('consultations')}
@@ -375,6 +317,14 @@ const AdminDashboard = () => {
                     <User className="w-3 h-3 sm:w-4 sm:h-4" />
                     الملف الشخصي
                   </Button>
+                  <Button 
+          variant="outline" 
+          className=" justify-start gap-2 text-red-600 border-red-200 hover:bg-red-50"
+          onClick={handleLogout}
+        >
+          <LogOut className="w-4 h-4" />
+          تسجيل الخروج
+        </Button>
                 </div>
               </div>
             </div>
