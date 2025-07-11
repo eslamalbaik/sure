@@ -25,59 +25,65 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
   const [isFollowUp, setIsFollowUp] = useState(false);
 
   const handleSendReply = async () => {
-    if (!consultation || !reply.trim()) return;
+  if (!consultation || !reply.trim()) return;
 
-    setIsSubmitting(true);
-    try {
-      console.log('Sending reply to:', consultation.email);
+  setIsSubmitting(true);
+  try {
+    console.log('Sending reply to:', consultation.email);
 
-      // Send reply email
-      const { error } = await supabase.functions.invoke('send-reply', {
-        body: {
-          consultation_id: consultation.id,
-          user_email: consultation.email,
-          user_name: consultation.name,
-          reply_message: reply,
-          consultation_type: consultation.consultation_type,
-          is_follow_up: isFollowUp
-        }
-      });
+    const res = await fetch('https://mailer-green-five.vercel.app/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        consultation_id: consultation.id,
+        user_email: consultation.email,
+        user_name: consultation.name,
+        reply_message: reply,
+        consultation_type: consultation.consultation_type,
+        is_follow_up: isFollowUp
+      })
+    });
 
-      if (error) {
-        console.error('Error sending reply:', error);
-        throw error;
-      }
+    const result = await res.json();
 
-      // Update consultation status only if not a follow-up
-      if (!isFollowUp) {
-        await supabase
-          .from('consultations')
-          .update({ 
-            status: 'completed',
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', consultation.id);
-      }
-
-      toast({
-        title: "تم إرسال الرد بنجاح",
-        description: `تم إرسال ${isFollowUp ? 'رد المتابعة' : 'الرد'} إلى المستخدم عبر البريد الإلكتروني`
-      });
-
-      setReply('');
-      setIsFollowUp(false);
-      onOpenChange(false);
-    } catch (error: any) {
-      console.error('Error sending reply:', error);
-      toast({
-        title: "خطأ في الإرسال",
-        description: "حدث خطأ أثناء إرسال الرد. يرجى المحاولة مرة أخرى.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
+    if (!res.ok) {
+      console.error('Email API error:', result);
+      throw new Error(result.message || 'فشل في إرسال البريد');
     }
-  };
+
+    // Update consultation status only if not a follow-up
+    if (!isFollowUp) {
+      await supabase
+        .from('consultations')
+        .update({
+          status: 'completed',
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', consultation.id);
+    }
+
+    toast({
+      title: "تم إرسال الرد بنجاح",
+      description: `تم إرسال ${isFollowUp ? 'رد المتابعة' : 'الرد'} إلى المستخدم عبر البريد الإلكتروني`
+    });
+
+    setReply('');
+    setIsFollowUp(false);
+    onOpenChange(false);
+  } catch (error: any) {
+    console.error('Error sending reply:', error);
+    toast({
+      title: "خطأ في الإرسال",
+      description: "حدث خطأ أثناء إرسال الرد. يرجى المحاولة مرة أخرى.",
+      variant: "destructive"
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
