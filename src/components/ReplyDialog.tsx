@@ -47,7 +47,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
     });
 
     const result = await res.json();
-
+    
     if (!res.ok) {
       console.error('Email API error:', result);
       throw new Error(result.message || 'فشل في إرسال البريد');
@@ -73,7 +73,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
     setIsFollowUp(false);
     onOpenChange(false);
   } catch (error: any) {
-    console.error('Error sending reply:', error);
+    console.error('Error sending reply:فففف', error);
     toast({
       title: "خطأ في الإرسال",
       description: "حدث خطأ أثناء إرسال الرد. يرجى المحاولة مرة أخرى.",
