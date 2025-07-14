@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -25,65 +24,56 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
   const [isFollowUp, setIsFollowUp] = useState(false);
 
   const handleSendReply = async () => {
-  if (!consultation || !reply.trim()) return;
+    if (!consultation || !reply.trim()) return;
 
-  setIsSubmitting(true);
-  try {
-    console.log('Sending reply to:', consultation.email);
-
-    const res = await fetch('https://mailer-green-five.vercel.app/send-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        consultation_id: consultation.id,
-        user_email: consultation.email,
-        user_name: consultation.name,
-        reply_message: reply,
-        consultation_type: consultation.consultation_type,
-        is_follow_up: isFollowUp
-      })
-    });
-
-    const result = await res.json();
-    
-    if (!res.ok) {
-      console.error('Email API error:', result);
-      throw new Error(result.message || 'فشل في إرسال البريد');
-    }
-
-    // Update consultation status only if not a follow-up
-    if (!isFollowUp) {
-      await supabase
-        .from('consultations')
-        .update({
-          status: 'completed',
-          updated_at: new Date().toISOString()
+    setIsSubmitting(true);
+    try {
+      const res = await fetch('https://mailer-green-five.vercel.app/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          consultation_id: consultation.id,
+          user_email: consultation.email,
+          user_name: consultation.name,
+          reply_message: reply,
+          consultation_type: consultation.consultation_type,
+          is_follow_up: isFollowUp
         })
-        .eq('id', consultation.id);
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.message || 'فشل في إرسال البريد');
+      }
+
+      if (!isFollowUp) {
+        await supabase
+          .from('consultations')
+          .update({ status: 'completed', updated_at: new Date().toISOString() })
+          .eq('id', consultation.id);
+      }
+
+      toast({
+        title: 'تم إرسال الرد بنجاح',
+        description: `تم إرسال ${isFollowUp ? 'رد المتابعة' : 'الرد'} إلى المستخدم عبر البريد الإلكتروني`
+      });
+
+      setReply('');
+      setIsFollowUp(false);
+      onOpenChange(false);
+    } catch (error: any) {
+      toast({
+        title: 'خطأ في الإرسال',
+        description: 'حدث خطأ أثناء إرسال الرد. يرجى المحاولة مرة أخرى.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsSubmitting(false);
     }
-
-    toast({
-      title: "تم إرسال الرد بنجاح",
-      description: `تم إرسال ${isFollowUp ? 'رد المتابعة' : 'الرد'} إلى المستخدم عبر البريد الإلكتروني`
-    });
-
-    setReply('');
-    setIsFollowUp(false);
-    onOpenChange(false);
-  } catch (error: any) {
-    console.error('Error sending reply:فففف', error);
-    toast({
-      title: "خطأ في الإرسال",
-      description: "حدث خطأ أثناء إرسال الرد. يرجى المحاولة مرة أخرى.",
-      variant: "destructive"
-    });
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -106,14 +96,13 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
                 {consultation.message}
               </p>
               <div className="mt-2 text-xs text-gray-500">
-                الحالة: {consultation.status === 'pending' ? 'في الانتظار' : 
-                        consultation.status === 'reviewed' ? 'تمت المراجعة' : 'مكتملة'}
+                الحالة: {consultation.status === 'pending' ? 'في الانتظار' : consultation.status === 'reviewed' ? 'تمت المراجعة' : 'مكتملة'}
               </div>
             </div>
 
             <div className="flex items-center space-x-2 space-x-reverse">
-              <Checkbox 
-                id="followUp" 
+              <Checkbox
+                id="followUp"
                 checked={isFollowUp}
                 onCheckedChange={(checked) => setIsFollowUp(checked as boolean)}
               />
@@ -131,7 +120,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
                 id="reply"
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
-                placeholder={isFollowUp ? "اكتب رد المتابعة هنا..." : "اكتب ردك هنا..."}
+                placeholder={isFollowUp ? 'اكتب رد المتابعة هنا...' : 'اكتب ردك هنا...'}
                 className="min-h-[150px]"
                 maxLength={2000}
               />
@@ -143,7 +132,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
             {isFollowUp && (
               <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg">
                 <p className="text-sm text-blue-700">
-                  ملاحظة: هذا رد متابعة ولن يؤثر على حالة الاستشارة الحالية. 
+                  ملاحظة: هذا رد متابعة ولن يؤثر على حالة الاستشارة الحالية.
                   يمكنك إرسال عدة ردود متابعة حسب الحاجة.
                 </p>
               </div>
@@ -152,19 +141,10 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
         )}
 
         <DialogFooter className="gap-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-          >
-            <X className="w-4 h-4 mr-2" />
-            إلغاء
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+            <X className="w-4 h-4 mr-2" /> إلغاء
           </Button>
-          <Button
-            onClick={handleSendReply}
-            disabled={isSubmitting || !reply.trim()}
-            className="bg-[#1a365d] hover:bg-[#1a365d]/90"
-          >
+          <Button onClick={handleSendReply} disabled={isSubmitting || !reply.trim()} className="bg-[#1a365d] hover:bg-[#1a365d]/90">
             <Send className="w-4 h-4 mr-2" />
             {isSubmitting ? 'جاري الإرسال...' : (isFollowUp ? 'إرسال رد المتابعة' : 'إرسال الرد')}
           </Button>
