@@ -186,15 +186,18 @@ const AdminDashboard = () => {
   };
 
   const deleteConsultations = async (ids: string[]) => {
+    console.log(ids)
     if (deleting) return;
     
     setDeleting(true);
     try {
-      const { error } = await supabase
-        .from('consultations')
-        .delete()
-        .in('id', ids);
+const { data, error, count, status } = await supabase
+  .from('consultations')
+  .delete()
+  .in('id', ids)
+  .select(); // مهم جداً علشان Supabase يرجع الصفوف اللي اتحذفت
 
+console.log({ data, error, count, status });
       if (error) throw error;
 
       toast({
