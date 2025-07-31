@@ -1,6 +1,5 @@
-
-import { useState } from 'react';
-import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { FileText, UserPlus, Send, Phone, FileSearch, MessageCircle, Upload, X, File, Image } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,9 +9,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
+interface AttachedFile {
+  file: File;
+  id: string;
+  preview?: string;
+}
+
 const ConsultationFroms = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const existingFileInputRef = useRef<HTMLInputElement>(null);
+  const newFileInputRef = useRef<HTMLInputElement>(null);
   
   const [existingClientForm, setExistingClientForm] = useState({
     name: '',
@@ -29,6 +36,97 @@ const ConsultationFroms = () => {
     question: ''
   });
 
+  const [existingClientAttachments, setExistingClientAttachments] = useState<AttachedFile[]>([]);
+  const [newClientAttachments, setNewClientAttachments] = useState<AttachedFile[]>([]);
+
+  const handleFileUpload = (files: FileList | null, isExistingClient: boolean) => {
+    if (!files) return;
+
+    const newFiles: AttachedFile[] = [];
+    
+    Array.from(files).forEach((file) => {
+      // التحقق من حجم الملف (أقل من 10 ميجابايت)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "حجم الملف كبير جداً",
+          description: "يجب أن يكون حجم الملف أقل من 10 ميجابايت",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // التحقق من نوع الملف
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "نوع ملف غير مدعوم",
+          description: "يُسمح فقط بملفات الصور وPDF وWord",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const fileId = Math.random().toString(36).substr(2, 9);
+      const attachedFile: AttachedFile = {
+        file,
+        id: fileId
+      };
+
+      // إنشاء معاينة للصور
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          attachedFile.preview = e.target?.result as string;
+          if (isExistingClient) {
+            setExistingClientAttachments(prev => [...prev, attachedFile]);
+          } else {
+            setNewClientAttachments(prev => [...prev, attachedFile]);
+          }
+        };
+        reader.readAsDataURL(file);
+      } else {
+        if (isExistingClient) {
+          setExistingClientAttachments(prev => [...prev, attachedFile]);
+        } else {
+          setNewClientAttachments(prev => [...prev, attachedFile]);
+        }
+      }
+    });
+  };
+
+  const removeAttachment = (fileId: string, isExistingClient: boolean) => {
+    if (isExistingClient) {
+      setExistingClientAttachments(prev => prev.filter(file => file.id !== fileId));
+    } else {
+      setNewClientAttachments(prev => prev.filter(file => file.id !== fileId));
+    }
+  };
+
+  const uploadFilesToSupabase = async (attachments: AttachedFile[]) => {
+    const uploadedFiles = [];
+    
+    for (const attachment of attachments) {
+      const fileName = `${Date.now()}_${attachment.file.name}`;
+      const { data, error } = await supabase.storage
+        .from('consultation-attachments')
+        .upload(fileName, attachment.file);
+      
+      if (error) {
+        console.error('Error uploading file:', error);
+        continue;
+      }
+      
+      uploadedFiles.push({
+        name: attachment.file.name,
+        path: data.path,
+        size: attachment.file.size,
+        type: attachment.file.type
+      });
+    }
+    
+    return uploadedFiles;
+  };
+
   const sendNotification = async (consultationData: any) => {
     try {
       await supabase.functions.invoke('send-notification', {
@@ -44,11 +142,15 @@ const ConsultationFroms = () => {
     setIsSubmitting(true);
     
     try {
+      // رفع الملفات المرفقة
+      const uploadedFiles = await uploadFilesToSupabase(existingClientAttachments);
+      
       const consultationData = {
         name: existingClientForm.name,
         email: existingClientForm.email,
         consultation_type: 'medical',
         message: `رقم الملف: ${existingClientForm.fileNumber}\nتاريخ آخر زيارة: ${existingClientForm.lastVisit}\nرقم الجوال: ${existingClientForm.mobile}\n\nالاستشارة: ${existingClientForm.question}`,
+        attachments: uploadedFiles
       };
 
       const { error } = await supabase
@@ -66,6 +168,7 @@ const ConsultationFroms = () => {
       });
       
       setExistingClientForm({ name: '', email: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+      setExistingClientAttachments([]);
     } catch (error) {
       console.error('Error submitting consultation:', error);
       toast({
@@ -83,11 +186,15 @@ const ConsultationFroms = () => {
     setIsSubmitting(true);
     
     try {
+      // رفع الملفات المرفقة
+      const uploadedFiles = await uploadFilesToSupabase(newClientAttachments);
+      
       const consultationData = {
         name: newClientForm.name,
         email: newClientForm.email,
         consultation_type: 'personal',
         message: newClientForm.question,
+        attachments: uploadedFiles
       };
 
       const { error } = await supabase
@@ -105,6 +212,7 @@ const ConsultationFroms = () => {
       });
       
       setNewClientForm({ name: '', email: '', question: '' });
+      setNewClientAttachments([]);
     } catch (error) {
       console.error('Error submitting consultation:', error);
       toast({
@@ -116,6 +224,97 @@ const ConsultationFroms = () => {
       setIsSubmitting(false);
     }
   };
+
+  const FileAttachmentSection = ({ 
+    attachments, 
+    onFileUpload, 
+    fileInputRef, 
+    isExistingClient 
+  }: {
+    attachments: AttachedFile[];
+    onFileUpload: (files: FileList | null) => void;
+    fileInputRef: React.RefObject<HTMLInputElement>;
+    isExistingClient: boolean;
+  }) => (
+    <div className="space-y-4">
+      <Label className="text-lg font-semibold text-[#1a365d]">
+        إرفاق ملفات أو صور (اختياري)
+      </Label>
+      
+      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#1a365d] transition-colors">
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          accept="image/*,.pdf,.doc,.docx"
+          onChange={(e) => onFileUpload(e.target.files)}
+          className="hidden"
+        />
+        
+        <div className="space-y-3">
+          <Upload className="w-12 h-12 text-gray-400 mx-auto" />
+          <div>
+            <p className="text-lg text-gray-600 mb-2">اسحب الملفات هنا أو</p>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+              className="border-[#1a365d] text-[#1a365d] hover:bg-[#1a365d] hover:text-white"
+            >
+              اختر الملفات
+            </Button>
+          </div>
+          <p className="text-sm text-gray-500">
+            يُسمح بملفات الصور وPDF وWord (حد أقصى 10 ميجابايت لكل ملف)
+          </p>
+        </div>
+      </div>
+
+      {attachments.length > 0 && (
+        <div className="space-y-3">
+          <h4 className="font-semibold text-[#1a365d]">الملفات المرفقة:</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {attachments.map((attachment) => (
+              <div key={attachment.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
+                <div className="flex-shrink-0">
+                  {attachment.preview ? (
+                    <img 
+                      src={attachment.preview} 
+                      alt={attachment.file.name}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-200 rounded flex items-center justify-center">
+                      <File className="w-6 h-6 text-gray-500" />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {attachment.file.name}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {(attachment.file.size / 1024 / 1024).toFixed(2)} ميجابايت
+                  </p>
+                </div>
+                
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => removeAttachment(attachment.id, isExistingClient)}
+                  className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <section id="consultation" className="py-20 bg-gradient-to-br from-gray-50 to-white">
@@ -135,7 +334,7 @@ const ConsultationFroms = () => {
             <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100 p-1 rounded-2xl">
               <TabsTrigger value="existing" className="flex items-center gap-2 rounded-xl transition-all">
                 <FileSearch className="w-4 h-4" />
-                قسم الإستشارات الطبية
+             قسم الإستشارات الطبية   "إدراك" 
               </TabsTrigger>
               <TabsTrigger value="new" className="flex items-center gap-2 rounded-xl transition-all">
                 <UserPlus className="w-4 h-4" />
@@ -197,7 +396,7 @@ const ConsultationFroms = () => {
                         </Label>
                         <Input
                           id="file-number"
-                          type="text"
+                          type="number"
                           value={existingClientForm.fileNumber}
                           onChange={(e) => setExistingClientForm({ ...existingClientForm, fileNumber: e.target.value })}
                           className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
@@ -223,15 +422,31 @@ const ConsultationFroms = () => {
                       <Label htmlFor="existing-mobile" className="text-lg font-semibold text-[#1a365d]">
                         رقم الجوال
                       </Label>
-                      <Input
-                        id="existing-mobile"
-                        type="tel"
-                        value={existingClientForm.mobile}
-                        onChange={(e) => setExistingClientForm({ ...existingClientForm, mobile: e.target.value })}
-                        className="mt-2 h-14 text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
-                        placeholder="+966920007731"
-                        required
-                      />
+
+                      <div className="mt-2 flex items-center h-14 border-2 border-gray-200 focus-within:border-[#1a365d] rounded-xl overflow-hidden">
+                        {/* رمز السعودية + العلم */}
+                        <div className="flex items-center gap-2 px-4 text-lg text-gray-600 bg-gray-100 h-full">
+                          <img
+                            src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Flag_of_Saudi_Arabia.svg"
+                            alt="Saudi Flag"
+                            className="w-6 h-4 object-cover"
+                          />
+                          +966
+                        </div>
+
+                        {/* حقل الإدخال */}
+                        <input
+                          id="existing-mobile"
+                          type="number"
+                          value={existingClientForm.mobile}
+                          onChange={(e) =>
+                            setExistingClientForm({ ...existingClientForm, mobile: e.target.value })
+                          }
+                          className="flex-1 h-full px-4 text-lg focus:outline-none"
+                          placeholder="5xxxxxxxx"
+                          required
+                        />
+                      </div>
                     </div>
 
                     <div>
@@ -251,6 +466,13 @@ const ConsultationFroms = () => {
                         الحد الأقصى: 500 حرف
                       </p>
                     </div>
+
+                    <FileAttachmentSection
+                      attachments={existingClientAttachments}
+                      onFileUpload={(files) => handleFileUpload(files, true)}
+                      fileInputRef={existingFileInputRef}
+                      isExistingClient={true}
+                    />
 
                     <Button
                       type="submit"
@@ -329,6 +551,13 @@ const ConsultationFroms = () => {
                         الحد الأقصى: 800 حرف
                       </p>
                     </div>
+
+                    <FileAttachmentSection
+                      attachments={newClientAttachments}
+                      onFileUpload={(files) => handleFileUpload(files, false)}
+                      fileInputRef={newFileInputRef}
+                      isExistingClient={false}
+                    />
 
                     <Button
                       type="submit"

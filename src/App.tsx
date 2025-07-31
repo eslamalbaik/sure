@@ -11,6 +11,7 @@ import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminAuth from "./components/AdminAuth";
 import Layout from "./components/Layout";
+import AboutShor from "./pages/aboutShor";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,8 @@ const App = () => (
         <Route element={<Layout />}>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/about-shor" element={<AboutShor />} />
+
         </Route>
           <Route path="/admin" element={<AdminAuth />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

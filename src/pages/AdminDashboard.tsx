@@ -567,6 +567,51 @@ console.log({ data, error, count, status });
                                       <DialogHeader>
                                         <DialogTitle>تفاصيل الاستشارة</DialogTitle>
                                       </DialogHeader>
+{consultation.attachments && (
+  <div className="flex flex-wrap gap-4">
+    {consultation.attachments.map((file: any, index: number) => {
+      const imageUrl = `https://hgzqqxqvkshomuysdwfo.supabase.co/storage/v1/object/public/consultation-attachments/${file.path}`;
+
+      const downloadImage = async () => {
+        const response = await fetch(imageUrl);
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = file.name;
+        link.click();
+      };
+
+      return (
+        <div key={index} className="flex flex-col items-center gap-2">
+          <img
+            src={imageUrl}
+            alt={file.name}
+            className="w-[150px] rounded-lg shadow-md"
+          />
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => window.open(imageUrl, "_blank")}
+              className="bg-gray-500 text-white text-xs px-3 py-1 rounded hover:bg-gray-600 transition"
+            >
+              مشاهدة
+            </button>
+
+            <button
+              onClick={downloadImage}
+              className="bg-blue-500 text-white text-xs px-3 py-1 rounded hover:bg-blue-600 transition"
+            >
+              تحميل
+            </button>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+)}
+
+
+
                                       <div className="space-y-4">
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                           <div>

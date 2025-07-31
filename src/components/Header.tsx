@@ -41,7 +41,7 @@ useEffect(() => {
     isVisible ? 'translate-y-0' : '-translate-y-full'
   }`}
   dir="rtl"
->      <div className="container mx-auto lg:px-28">
+>      <div className="container mx-auto lg:pr-28">
         <div className="flex items-center justify-between gap-8  h-20">
          <a href="/">
              <div className="flex items-center space-x-4 space-x-reverse">
@@ -58,47 +58,44 @@ useEffect(() => {
             >
               الرئيسية
             </button></a>
+                <a href="/about-shor">
+              <button 
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
+            >
+                عن شّور
+            </button>
+          </a>
+            <a
+            href='/#consultation' 
+              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
+            >
+              الاستشارات
+            </a>
           <a href="/about">
               <button 
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
-                 عن الدكتور عبدالله
+                 عن د.عبدالله
             </button>
           </a>
-            <button 
-              onClick={() => scrollToSection('consultation')}
-              className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
-            >
-              الاستشارات
-            </button>
-            <button 
-              onClick={() => scrollToSection('faq')}
+          
+            <a 
+              href="/#faq"
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
               الأسئلة الشائعة
-            </button>
-            <button 
-              onClick={() => scrollToSection('blog')}
+            </a>
+            <a 
+             href='/#blog'
               className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium"
             >
               المدونة
-            </button>
-            {/* <a href="/admin">
-              <button className="text-gray-700 hover:text-[#1a365d] transition-colors font-medium flex items-center gap-2">
-                <Shield className="w-4 h-4" />
-                الإدارة
-              </button>
-            </a> */}
+            </a>
           </nav>
 
           {/* Contact Info */}
-          {/* <div className="hidden lg:flex items-center space-x-4 space-x-reverse">
-            <div className="flex items-center gap-2 px-8 py-4 text-sm font-bold rounded-full bg-[#560CAB]  text-white">
-            <span>  احجز استشارتك الأن</span>
-              <Phone className="w-4 h-4" />
-            </div>
-          </div> */}
-        <a href="#consultation" className="relative hidden lg:flex items-center justify-center p-4 px-6 py-3 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-[#560CAB] rounded-full shadow-md group">
+         
+        <a href="/#consultation" className="relative hidden lg:flex items-center justify-center p-4 px-6 py-3 overflow-hidden font-medium text-indigo-600 transition duration-300 ease-out border-2 border-[#560CAB] rounded-full shadow-md group">
             <span className="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-[#560CAB] group-hover:translate-x-0 ease">
               <Phone className="w-4 h-4" />
             </span>
@@ -131,30 +128,22 @@ useEffect(() => {
               >
                   عن الدكتور عبدالله
               </button></a>
-              <button 
-                onClick={() => scrollToSection('consultation')}
+              <a 
+              href="/#consultation"
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                 الاستشارات
-              </button>
-              <button 
-                onClick={() => scrollToSection('faq')}
+              </a>
+              <a href='/#faq' 
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                 الأسئلة الشائعة
-              </button>
-              <button 
-                onClick={() => scrollToSection('blog')}
+              </a>
+              <a href='/#blog'
                 className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors"
               >
                 المدونة
-              </button>
-              {/* <a href="/admin">
-                <button className="text-right px-4 py-2 text-gray-700 hover:text-[#1a365d] transition-colors flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  الإدارة
-                </button>
-              </a> */}
+              </a>
             </nav>
           </div>
         )}
