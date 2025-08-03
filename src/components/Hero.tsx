@@ -33,16 +33,16 @@ const avatars = [
               </div> */}
               <h1 className="text-4xl font-Brands  lg:text-[55px] font-bold mb-6 animate-fade-in leading-tight">
                 شور للإستشارات
-                <span className="block text-[#f7b731] mt-2">المتخصصة</span>
+                {/* <span className="block text-[#f7b731] mt-2">المتخصصة</span> */}
               </h1>
               {/* <h2 className="text-2xl lg:text-3xl text-[#f7b731] mb-8 animate-fade-in">
                 د. عبدالله السبيعي
               </h2> */}
               <p className="text-xl lg:text-2xl mb-12 opacity-90 animate-fade-in leading-relaxed">
-                نفترض فيك السلامة فلا نعالجك ولا نقودك ، بل نقف معك ونسير جنبك
+                نفترض فيك السلامة ، فلا نعالجك ولا نقودك ، بل نقف معك ونسير بجنبك
               </p>
               <div className='flex justify-center lg:justify-start items-center gap-4'>
-                <a href="/about">
+                {/* <a href="/about">
                   <Button
                     className="group bg-[#560CAB] hover:bg-[#560CAB]/90 text-white px-6 py-6 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
                   >
@@ -51,7 +51,7 @@ const avatars = [
                       className="w-4 h-4 mr-2 transition-transform duration-300 group-active:-translate-x-1"
                     />
                   </Button>
-                </a>
+                </a> */}
                 <a href="/about-shor">
                   <Button
                     className="group bg-white hover:bg-[#560CAB]/90 hover:text-white text-[#560CAB] px-6 py-6 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
@@ -66,9 +66,8 @@ const avatars = [
            
               </div>
            <br />
-    <div className="flex items-center gap-4 text-white px-4 py-2 rounded-lg">
-      {/* Overlapping Avatars */}
-      <div className="relative h-10 w-[120px]"> {/* width = 5 avatars * 24px step */}
+    {/* <div className="flex items-center gap-4 text-white px-4 py-2 rounded-lg">
+      <div className="relative h-10 w-[120px]"> 
         {avatars.map((src, i) => (
           <img
             key={i}
@@ -79,7 +78,6 @@ const avatars = [
           />
         ))}
       </div>
-      {/* Stars and Text */}
       <div className="flex items-start justify-start flex-col  gap-2">
       
   <span className="text-sm">آلاف المستفيدين يختاروننا</span>
@@ -89,7 +87,7 @@ const avatars = [
         ))}
         </div>
       </div>
-    </div>
+    </div> */}
             </div>
 
             <div className="relative">

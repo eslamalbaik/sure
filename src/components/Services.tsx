@@ -27,7 +27,7 @@ const services = [
     <section id="services" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+          {/* <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1a365d] mb-6">
               مسارات شور
             </h2>
@@ -36,9 +36,9 @@ const services = [
               </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
 
-          </div>
+          </div> */}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {services.map((service, index) => (
               <Card 
                 key={index} 
@@ -62,7 +62,7 @@ const services = [
                 </CardContent>
               </Card>
             ))}
-          </div>
+          </div> */}
 
           <div className="bg-gradient-to-r from-[#1a365d] via-purple-600 to-[#560CAB] rounded-3xl p-8 md:p-12 text-center text-white relative overflow-hidden">
             {/* Background Pattern */}
@@ -88,8 +88,8 @@ const services = [
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
                     <TrendingUp className="w-8 h-8 text-white" />
                   </div>
-                  <h4 className="text-xl font-semibold mb-3">خطط ناجحة لتحسين جودة الحياة</h4>
-                  <p className="text-white/90">نتائج فعلية في تحسين جودة الحياة</p>
+                  <h4 className="text-xl font-semibold mb-3"> تحسين جودة الحياة</h4>
+                  <p className="text-white/90">خطوات فعلية في تحسين جودة الحياة</p>
                 </div>
                 <div className="group">
                   <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">

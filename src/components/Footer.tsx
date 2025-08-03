@@ -1,5 +1,5 @@
 
-import { Facebook, Instagram, X } from "lucide-react";
+import { Facebook, Instagram, X,Mail, ArrowBigDown, ArrowBigRight, ArrowBigLeft } from "lucide-react";
 import {TikTokIcon} from '@/components/ui/TikTokIcon'
 import logo from '/logo-footer.png'
 
@@ -13,7 +13,7 @@ const Footer = () => {
               <img src={logo} className='w-28 h-16' alt="logo website"/>
 <br />
               <p className="text-gray-300 mb-4 leading-relaxed">
-                خدمات استشارية طبية متخصصة مكرسة لتقديم إرشادات الرعاية الصحية الخبيرة والرعاية الشخصية للمرضى.
+                خدمات استشارية  لإكتساب الثقة والتكيف مع التحديات والحياة  وإدارة النزاعات والحياة.
               </p>
             </div>
             
@@ -29,52 +29,59 @@ const Footer = () => {
             </div>
             
    <div>
-      <h4 className="text-xl font-bold mb-4">تابعنا على السوشال ميديا</h4>
-      <div className="flex items-center gap-4 text-gray-300">
-        <a
-          href="https://www.facebook.com/Prof.Subaie/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Facebook"
-          className="hover:text-blue-500 transition-colors"
-        >
-          <Facebook size={24} />
-        </a>
-        <a
-          href="prof_subaie"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Twitter"
-          className="hover:text-sky-400 transition-colors"
-        >
-          <X size={24} />
-        </a>
-        <a
-          href="https://www.instagram.com/prof_subaie/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Instagram"
-          className="hover:text-pink-400 transition-colors"
-        >
-          <Instagram size={24} />
-        </a>
-        <a
-          href="https://www.tiktok.com/@prof.subaie"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="YouTube"
-          className="hover:text-red-500 transition-colors"
-        >
-          <TikTokIcon className="w-8 h-8 hover:text-black transition-colors" />
-        </a>
-      </div>
-            </div>
+  <h4 className="text-xl font-bold mb-4">تابعنا على السوشال ميديا</h4>
+  <div className="flex items-center gap-4 text-gray-300">
+    <a
+      href="https://www.facebook.com/Prof.Subaie/"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Facebook"
+      className="hover:text-blue-500 transition-colors"
+    >
+      <Facebook size={24} />
+    </a>
+    <a
+      href="prof_subaie"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Twitter"
+      className="hover:text-sky-400 transition-colors"
+    >
+      <X size={24} />
+    </a>
+    <a
+      href="https://www.instagram.com/prof_subaie/"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Instagram"
+      className="hover:text-pink-400 transition-colors"
+    >
+      <Instagram size={24} />
+    </a>
+    <a
+      href="https://www.tiktok.com/@prof.subaie"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="TikTok"
+      className="hover:text-red-500 transition-colors"
+    >
+      <TikTokIcon className="w-8 h-8 hover:text-black transition-colors" />
+    </a>
+  </div>
+
+  {/* دعم فني عبر الإيميل */}
+  <div className="mt-6 text-gray-300">
+      <a  href="mailto:shor.helpdesk@gmail.com"  aria-label="Support"><button 
+      className="text-sm font-semibold mb-2 hover:bg-green-400  hover:border-green-400 hover:text-white transition-colors flex justify-center items-center gap-4   bg-white border-2 px-4 py-2 text-black rounded-lg  border-[#f7b731]">التواصل مع الدعم الفني <Mail size={20} /></button></a>
+  </div>
+</div>
+
           </div>
           
           <hr className="border-gray-600 my-8" />
           
           <div className="text-center text-gray-300">
-            <p>&copy; 2024 د. عبدالله السبيعي. جميع الحقوق محفوظة. | خدمات الاستشارات  المتخصصة</p>
+            <p>&copy; 2025 د. عبدالله السبيعي. جميع الحقوق محفوظة. | خدمات الاستشارات  المتخصصة</p>
           </div>
         </div>
       </div>

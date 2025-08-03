@@ -1,6 +1,5 @@
 
 import { GraduationCap, Briefcase, Target, HeartHandshake, Compass, Star, TrendingUp, Users, MessagesSquare, SquareLibrary, Feather, Cannabis, HandHeart, ArrowLeft } from 'lucide-react';
-import p5 from '/assets/droctor.jpg';
 import { Button } from './ui/button';
 
 
@@ -54,7 +53,7 @@ const AboutSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg text-[#1a365d]">المؤهلات الأكاديمية</h4>
-                    <p className="text-gray-600">زمالة في الطب النفسي من الكلية الملكية للأطباء النفسيين - كندا</p>
+                    <p className="text-gray-600">زمالة الطب النفسي من الكلية الملكية للأطباء النفسيين - كندا</p>
                   </div>
                 </div>
 
@@ -63,8 +62,8 @@ const AboutSection = () => {
                     <Briefcase className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-lg text-[#1a365d]">استشاري معتمد</h4>
-                    <p className="text-gray-600">استشاري الطب النفسي في مركز إدراك للإستشارات"
+                    <h4 className="font-semibold text-lg text-[#1a365d]">استشاري مرخص</h4>
+                    <p className="text-gray-600">استشاري الطب النفسي في مركز إدراك للاستشارات الطبية
                     </p>
                   </div>
                 </div>
@@ -75,7 +74,9 @@ const AboutSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg text-[#1a365d]">خبرة متخصصة</h4>
-                    <p className="text-gray-600">أكثر من 30 سنة في الطب النفسي</p>
+                    <p className="text-gray-600">
+                      أكثر من 30 سنة في الطب النفسي والتعليم والتدريب الطبي
+                    </p>
                   </div>
                 </div>
 
@@ -85,7 +86,9 @@ const AboutSection = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-lg text-[#1a365d]">الإنجازات العلمية</h4>
-                    <p className="text-gray-600 ">+٩٤  بحثاً علمياً منشوراً في مجالات: اضطرابات الأكل، التدخين، والأمراض النفسية.</p>
+                    <p className="text-gray-600 ">
++94 بحثاً  علمياً منشوراً في شتى المجالات  الصحية ، والنفسية ، والاجتماعية
+</p>
                   </div>
 
                 </div>
@@ -122,7 +125,7 @@ const AboutSection = () => {
               <div className="bg-white rounded-3xl shadow-2xl p-8 transform hover:scale-105 transition-transform duration-300">
 
                 <img
-                  src={p5}
+                  src='/assets/doc.jpg'
                   alt="Dr. Abdullah Al-Subaie"
                   className="w-full h-[400px] object-cover rounded-2xl mb-6"
                 />
@@ -131,18 +134,18 @@ const AboutSection = () => {
                     ا.د.عبدالله بن سلطان السبيعي
                   </h4>
                   <p className="text-[#f7b731] font-semibold mb-4">
-                    استشاري وبروفيسور متخصص في الطب النفسي
+                    استشاري وبروفيسور  الطب النفسي
                   </p>
                 </div>
               </div>
 
               {/* Floating Elements */}
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-[#f7b731] rounded-full flex items-center justify-center shadow-lg">
+              {/* <div className="absolute -top-4 -right-4 w-16 h-16 bg-[#f7b731] rounded-full flex items-center justify-center shadow-lg">
                 <Star className="w-8 h-8 text-white" />
               </div>
               <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center shadow-lg">
                 <Feather className="w-6 h-6 text-white" />
-              </div>
+              </div> */}
             </div>
           </div>
 

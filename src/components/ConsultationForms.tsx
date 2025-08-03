@@ -324,8 +324,8 @@ const ConsultationFroms = () => {
             <h2 className="text-4xl md:text-4xl font-bold text-[#1a365d] mb-6">
               الاستشارات
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              احصل على استشارة من د. عبدالله السبيعي، المتخصص في الطب النفسي.
+            <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
+            احصل على استشارة من د. عبدالله السبيعي.
             </p>
             <div className="w-24 h-1 bg-[#f7b731] mx-auto mt-6 rounded-full"></div>
           </div>
@@ -498,7 +498,7 @@ const ConsultationFroms = () => {
                     <div>
                       <CardTitle className="text-3xl font-bold">قسم الإستشارات الشخصية</CardTitle>
                       <CardDescription className="text-white/90 text-lg">
-                        للعملاء الجدد الذين لا يملكون ملف استشاري
+                        للعملاء الراغبين في إستشارة خاصة  (غير طبية ) وبسرية تامة
                       </CardDescription>
                     </div>
                   </div>
