@@ -12,6 +12,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import AdminAuth from "./components/AdminAuth";
 import Layout from "./components/Layout";
 import AboutShor from "./pages/aboutShor";
+import PersonalConsultation from "./pages/PersonalConsultation";
+import MedicalConsultation from "./pages/MedicalConsultation";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +28,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/about-shor" element={<AboutShor />} />
+          <Route path="/personal-consultation" element={<PersonalConsultation />} />
+          <Route path="/medical-consultation" element={<MedicalConsultation />} />
 
         </Route>
           <Route path="/admin" element={<AdminAuth />} />

@@ -87,7 +87,7 @@ const AboutSection = () => {
                   <div>
                     <h4 className="font-semibold text-lg text-[#1a365d]">الإنجازات العلمية</h4>
                     <p className="text-gray-600 ">
-+94 بحثاً  علمياً منشوراً في شتى المجالات  الصحية ، والنفسية ، والاجتماعية
++94 بحثاً علمياً منشوراً في شتى المجالات الصحية، والنفسية والاجتماعية
 </p>
                   </div>
 
@@ -158,8 +158,7 @@ const AboutSection = () => {
                 رؤيتنا ورسالتنا
               </h3>
               <p className="text-lg text-gray-700 leading-relaxed text-center max-w-4xl mx-auto mb-8">
-                أن نكون "بوصلتك في زمن التحديات" و رسالتنا  هي المساعدة في بناء علاقات أعمق، لتجاوز تحديات الحياة بثقة وسلام.
-
+أن نكون بوصلتك في زمن التحديات"، ورسالتنا هي مساعدتك في بناء علاقات أعمق، لتجاوز تحديات الحياة بثقة وسلام.
               </p>
             </div>
           </div>
@@ -174,7 +173,7 @@ const AboutSection = () => {
               <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="w-8 h-8 text-white" />
               </div>
-              <h4 className="font-semibold text-[#560CAB] mb-2">مهارات تعزيز التواصل. </h4>
+              <h4 className="font-semibold text-[#560CAB] mb-2">مهارات تعزيز التواصل </h4>
               {/* <p className="text-gray-600 text-sm">تشخيص شامل لحالة المستفيد النفسية والسلوكية</p> */}
             </div>
             <div className="text-center p-4">
@@ -192,7 +191,7 @@ const AboutSection = () => {
               {/* <p className="text-gray-600 text-sm">نُقدّم الدعم كجزء من علاقة إنسانية مهنية وآمنة</p> */}
             </div>
           </div>
-          <div className="flex justify-center flex-wrap items-center mt-8 gap-6">
+          <div className="flex justify-center lg:flex-row flex-col lg:flex-wrap items-center mt-8 gap-6">
             <div className="text-center p-4">
               <div className="w-16 h-16 bg-[#560CAB] rounded-full flex items-center justify-center mx-auto mb-4">
                 <HandHeart className="w-8 h-8 overflow-hidden text-white" />
@@ -203,7 +202,7 @@ const AboutSection = () => {
               <div className="w-16 h-16 bg-[#f7b731] rounded-full flex items-center justify-center mx-auto mb-4">
                 <Cannabis className="w-8 h-8 text-white" />
               </div>
-              <h4 className="font-semibold text-[#560CAB] mb-2">إدارة النزاعات في العمل والعلاقات.</h4>
+              <h4 className="font-semibold text-[#560CAB] mb-2">إدارة النزاعات في العمل والعلاقات</h4>
             </div>
           </div>
         </div>

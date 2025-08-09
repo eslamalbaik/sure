@@ -13,16 +13,14 @@ const Footer = () => {
               <img src={logo} className='w-28 h-16' alt="logo website"/>
 <br />
               <p className="text-gray-300 mb-4 leading-relaxed">
-                خدمات استشارية  لإكتساب الثقة والتكيف مع التحديات والحياة  وإدارة النزاعات والحياة.
-              </p>
+خدمات استشارية لإكتساب الثقة والتكيف مع التحديات، وإدارة النزاعات.              </p>
             </div>
             
             <div>
               <h4 className="text-xl font-bold mb-4">روابط سريعة</h4>
               <ul className="space-y-2">
                 <li><a href="#home" className="text-gray-300 hover:text-[#f7b731] transition-colors">الرئيسية</a></li>
-                <li><a href="/about" className="text-gray-300 hover:text-[#f7b731] transition-colors">  عن الدكتور عبدالله</a></li>
-                <li><a href="#consultation" className="text-gray-300 hover:text-[#f7b731] transition-colors">الاستشارات</a></li>
+                <li><a href="/about" className="text-gray-300 hover:text-[#f7b731] transition-colors">  عن الدكتور عبدالله السبيعي</a></li>
                 <li><a href="#faq" className="text-gray-300 hover:text-[#f7b731] transition-colors">الأسئلة الشائعة</a></li>
                 <li><a href="#blog" className="text-gray-300 hover:text-[#f7b731] transition-colors">المدونة</a></li>
               </ul>
@@ -31,17 +29,17 @@ const Footer = () => {
    <div>
   <h4 className="text-xl font-bold mb-4">تابعنا على السوشال ميديا</h4>
   <div className="flex items-center gap-4 text-gray-300">
-    <a
-      href="https://www.facebook.com/Prof.Subaie/"
+    {/* <a
+      href="https://www.facebook.com/shor_consulting/"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Facebook"
       className="hover:text-blue-500 transition-colors"
     >
       <Facebook size={24} />
-    </a>
+    </a> */}
     <a
-      href="prof_subaie"
+      href="https://x.com/Shor_Consulting?s=08"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Twitter"
@@ -50,7 +48,7 @@ const Footer = () => {
       <X size={24} />
     </a>
     <a
-      href="https://www.instagram.com/prof_subaie/"
+      href="https://www.instagram.com/shor_consulting/"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Instagram"
@@ -59,7 +57,7 @@ const Footer = () => {
       <Instagram size={24} />
     </a>
     <a
-      href="https://www.tiktok.com/@prof.subaie"
+      href="https://www.tiktok.com/@shor_consulting"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="TikTok"
@@ -72,7 +70,7 @@ const Footer = () => {
   {/* دعم فني عبر الإيميل */}
   <div className="mt-6 text-gray-300">
       <a  href="mailto:shor.helpdesk@gmail.com"  aria-label="Support"><button 
-      className="text-sm font-semibold mb-2 hover:bg-green-400  hover:border-green-400 hover:text-white transition-colors flex justify-center items-center gap-4   bg-white border-2 px-4 py-2 text-black rounded-lg  border-[#f7b731]">التواصل مع الدعم الفني <Mail size={20} /></button></a>
+      className="text-sm font-semibold mb-2 hover:bg-green-400  hover:border-green-400 hover:text-white transition-colors flex justify-center items-center gap-4   bg-white border-2 px-4 py-2 text-black rounded-lg  border-[#f7b731]">  الدعم الفني <Mail size={20} /></button></a>
   </div>
 </div>
 
@@ -81,7 +79,7 @@ const Footer = () => {
           <hr className="border-gray-600 my-8" />
           
           <div className="text-center text-gray-300">
-            <p>&copy; 2025 د. عبدالله السبيعي. جميع الحقوق محفوظة. | خدمات الاستشارات  المتخصصة</p>
+            <p>&copy; 2025 د. عبدالله السبيعي. جميع الحقوق محفوظة. | خدمات الاستشارات  العامة</p>
           </div>
         </div>
       </div>

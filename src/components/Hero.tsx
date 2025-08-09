@@ -1,6 +1,6 @@
 
 import { Button } from '@/components/ui/button';
-import { Calendar, Award, Phone, ArrowLeft } from 'lucide-react';
+import { Calendar, Award, Phone, ArrowLeft, Waypoints, Users } from 'lucide-react';
 import doctor from '/Hero.webp'
 import { Star } from 'lucide-react';
 import { Heart } from 'lucide-react'; 
@@ -33,30 +33,16 @@ const avatars = [
               </div> */}
               <h1 className="text-4xl font-Brands  lg:text-[55px] font-bold mb-6 animate-fade-in leading-tight">
                 شور للإستشارات
-                {/* <span className="block text-[#f7b731] mt-2">المتخصصة</span> */}
               </h1>
-              {/* <h2 className="text-2xl lg:text-3xl text-[#f7b731] mb-8 animate-fade-in">
-                د. عبدالله السبيعي
-              </h2> */}
               <p className="text-xl lg:text-2xl mb-12 opacity-90 animate-fade-in leading-relaxed">
-                نفترض فيك السلامة ، فلا نعالجك ولا نقودك ، بل نقف معك ونسير بجنبك
+                نفترض فيك السلامة، فلا نعالجك ولا نقودك، بل نقف معك ونسير بجانبك
               </p>
               <div className='flex justify-center lg:justify-start items-center gap-4'>
-                {/* <a href="/about">
-                  <Button
-                    className="group bg-[#560CAB] hover:bg-[#560CAB]/90 text-white px-6 py-6 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
-                  >
-                    احجز استشارتك الأن
-                    <Phone
-                      className="w-4 h-4 mr-2 transition-transform duration-300 group-active:-translate-x-1"
-                    />
-                  </Button>
-                </a> */}
                 <a href="/about-shor">
                   <Button
                     className="group bg-white hover:bg-[#560CAB]/90 hover:text-white text-[#560CAB] px-6 py-6 rounded-full font-semibold transition-all duration-300 transform hover:scale-105"
                   >
-                    أعرف أكثر عن شّور
+                    أعرف أكثر عن شور
                     <ArrowLeft
                       className="w-4 h-4 mr-2 transition-transform duration-300 group-active:-translate-x-1"
                     />
@@ -101,6 +87,7 @@ const avatars = [
           </div>
         </div>
       </div>
+
     </section>
   );
 };

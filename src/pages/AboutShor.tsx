@@ -9,7 +9,7 @@ const AboutShor = () => {
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-purple-600 to-purple-800 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">عن شّور</h1>
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">عن شور</h1>
           <p className="text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed">
             بوصلتك في زمن التحديات
           </p>
@@ -29,7 +29,7 @@ const AboutShor = () => {
               <h2 className="text-3xl md:text-4xl font-bold text-gray-800">رؤيتنا</h2>
             </div>
             <p className="text-lg md:text-xl leading-relaxed text-gray-700">
-              في شّور، نؤمن أن كل إنسان يستحق من يستمع إليه، لا من يقوده أو يفرض عليه طريقًا. رؤيتنا أن نكون "بوصلتك في زمن التحديات"، نرافقك بخبرة ووعي، ونساعدك على أن ترى الصورة كاملة، وتبني قراراتك بثقة وسلام.
+              في شور، نؤمن أن كل إنسان يستحق من يستمع إليه، لا من يقوده أو يفرض عليه طريقًا. رؤيتنا أن نكون "بوصلتك في زمن التحديات"، نرافقك بخبرة ووعي، ونساعدك على أن ترى الصورة كاملة، وتبني قراراتك بثقة وسلام.
             </p>
           </div>
         </section>
@@ -52,7 +52,7 @@ const AboutShor = () => {
         {/* Why Shor Section */}
         <section className="mb-16">
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">لماذا "شّور"؟</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8 text-center">لماذا "شور"؟</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center p-6 bg-purple-50 rounded-xl hover:bg-purple-100 transition duration-300">
                 <div className="w-16 h-16 bg-purple-200 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -109,7 +109,7 @@ const AboutShor = () => {
               <h2 className="text-3xl md:text-4xl font-bold">خبراتنا</h2>
             </div>
             <p className="text-lg md:text-xl leading-relaxed">
-              يقود "شّور" البروفيسور د. عبدالله السبيعي، أحد أبرز المتخصصين في الطب النفسي في الوطن العربي، بخبرة تزيد عن 30 عامًا، وأكثر من 94 بحثًا علميًا منشورًا، ومؤلفات أثرت المكتبة النفسية العربية.
+              يقود "شور" البروفيسور د. عبدالله السبيعي، أحد أبرز المتخصصين في الطب النفسي في الوطن العربي، بخبرة تزيد عن 30 عامًا، وأكثر من 94 بحثًا علميًا منشورًا، ومؤلفات أثرت المكتبة النفسية العربية.
             </p>
           </div>
         </section>
@@ -118,7 +118,7 @@ const AboutShor = () => {
         <section className="text-center">
           <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
             <p className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-              🎯 في شّور، نحن لا نقدم مجرد استشارات…
+              🎯 في شور، نحن لا نقدم مجرد استشارات…
             </p>
             <p className="text-xl md:text-2xl text-gray-700 mb-6">
               نحن نمضي معك خطوة بخطوة نحو التمكين النفسي والوضوح الداخلي

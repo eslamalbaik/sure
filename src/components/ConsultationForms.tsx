@@ -458,13 +458,10 @@ const ConsultationFroms = () => {
                         value={existingClientForm.question}
                         onChange={(e) => setExistingClientForm({ ...existingClientForm, question: e.target.value })}
                         className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#1a365d] rounded-xl"
-                        placeholder="اكتب استشارتك أو سؤالك هنا (مقيدة بـ 4-5 أسطر)"
+                        placeholder="اكتب استشارتك أو سؤالك هنا "
                         maxLength={500}
                         required
                       />
-                      <p className="text-sm text-gray-500 mt-2 text-right">
-                        الحد الأقصى: 500 حرف
-                      </p>
                     </div>
 
                     <FileAttachmentSection
@@ -536,20 +533,17 @@ const ConsultationFroms = () => {
 
                     <div>
                       <Label htmlFor="new-question" className="text-lg font-semibold text-[#1a365d]">
-                        وصف المشكلة مقيدة ب أربع سطور
+                        وصف المشكلة 
                       </Label>
                       <Textarea
                         id="new-question"
                         value={newClientForm.question}
                         onChange={(e) => setNewClientForm({ ...newClientForm, question: e.target.value })}
                         className="mt-2 min-h-[140px] max-h-[200px] text-lg border-2 border-gray-200 focus:border-[#f7b731] rounded-xl"
-                        placeholder="اكتب وصف المشكلة مقيدة ب أربع سطور"
+                        placeholder="اكتب وصف المشكلة "
                         maxLength={800}
                         required
                       />
-                      <p className="text-sm text-gray-500 mt-2 text-right">
-                        الحد الأقصى: 800 حرف
-                      </p>
                     </div>
 
                     <FileAttachmentSection
