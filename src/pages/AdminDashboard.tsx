@@ -563,7 +563,7 @@ console.log({ data, error, count, status });
                                         <span className="hidden sm:inline">عرض</span>
                                       </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" dir="rtl">
+                                    <DialogContent className="max-w-4xl h-[60vh]  overflow-y-auto" dir="rtl">
                                       <DialogHeader>
                                         <DialogTitle>تفاصيل الاستشارة</DialogTitle>
                                       </DialogHeader>

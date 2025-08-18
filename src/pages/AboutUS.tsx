@@ -49,65 +49,6 @@ const AboutPage = () => {
     }
   ];
 
-  // const timeline = [
-  //   {
-  //     year: "2012",
-  //     title: "المشرف على كرسي أبحاث وتطبيقات الصحة النفسية",
-  //     institution: "جامعة الملك سعود",
-  //     icon: Target,
-  //     color: "bg-[#560CAB]"
-  //   },
-  //   {
-  //     year: "2001",
-  //     title: "أستاذ الطب النفسي",
-  //     institution: "جامعة الملك سعود",
-  //     icon: GraduationCap,
-  //     color: "bg-[#f7b731]"
-  //   },
-  //   {
-  //     year: "1996",
-  //     title: "رئيس قسم الطب النفسي",
-  //     institution: "مستشفى الملك فهد للحرس الوطني",
-  //     icon: Briefcase,
-  //     color: "bg-[#560CAB]"
-  //   },
-  //   {
-  //     year: "1990-1995",
-  //     title: "رئيس قسم الطب النفسي",
-  //     institution: "مستشفى الملك خالد الجامعي",
-  //     icon: Star,
-  //     color: "bg-[#f7b731]"
-  //   },
-  //   {
-  //     year: "1990-1995",
-  //     title: "رئيس نادي الطب النفسي والعلوم السلوكية",
-  //     institution: "جامعة الملك سعود",
-  //     icon: Users,
-  //     color: "bg-[#560CAB]"
-  //   },
-  //   {
-  //     year: "1993",
-  //     title: "استشاري الطب النفسي",
-  //     institution: "مستشفى الملك خالد الجامعي",
-  //     icon: Award,
-  //     color: "bg-[#f7b731]"
-  //   },
-  //   {
-  //     year: "1989",
-  //     title: "زمالة الطب النفسي",
-  //     institution: "الكلية الملكية للأطباء النفسيين - كندا",
-  //     icon: GraduationCap,
-  //     color: "bg-[#560CAB]"
-  //   },
-  //   {
-  //     year: "1982",
-  //     title: "بكالوريوس الطب والجراحة",
-  //     institution: "جامعة الملك عبد العزيز",
-  //     icon: BookOpen,
-  //     color: "bg-[#f7b731]"
-  //   }
-  // ];
-
   const scrollToConsultation = () => {
     window.location.href = '/#consultation';
   };
@@ -180,7 +121,7 @@ const AboutPage = () => {
                     </div>
                     <div className="flex items-center space-x-3 rtl:space-x-reverse bg-white/5 rounded-xl p-4">
                       <BookOpen className="w-6 h-6 text-[#f7b731] flex-shrink-0" />
-                      <span className="text-sm md:text-lg">+25 بحث علمي</span>
+                      <span className="text-sm md:text-lg">+94  بحث علمي</span>
                     </div>
                     <div className="flex items-center space-x-3 rtl:space-x-reverse bg-white/5 rounded-xl p-4">
                       <Award className="w-6 h-6 text-[#f7b731] flex-shrink-0" />
@@ -214,18 +155,9 @@ const AboutPage = () => {
                       className="w-full h-[300px] md:h-[500px] object-cover rounded-2xl shadow-xl"
                     />
                   </div>
-                  
-                  {/* Floating Elements */}
-                  {/* <div className="absolute -top-4 md:-top-6 -right-4 md:-right-6 w-16 h-16 md:w-24 md:h-24 bg-[#f7b731] rounded-full flex items-center justify-center shadow-2xl animate-pulse">
-                    <Star className="w-8 h-8 md:w-12 md:h-12 text-[#1a365d]" />
-                  </div> */}
-                  {/* <div className="absolute -bottom-4 md:-bottom-6 -left-4 md:-left-6 w-14 h-14 md:w-20 md:h-20 bg-[#560CAB] rounded-full flex items-center justify-center shadow-2xl"> */}
-                    {/* <MessagesSquare className="w-7 h-7 md:w-10 md:h-10 text-white" /> */}
-                                    {/* <Feather className="w-7 h-7 md:w-10 md:h-10 text-white" /> */}
-
-                  {/* </div> */}
-                  
                   {/* Achievement Badge */}
+                  <div>
+                  </div>
                   <div className="absolute top-4 left-4 bg-[#1a365d] rounded-2xl p-3 md:p-4 shadow-xl">
                     <div className="text-center">
                       <div className="text-lg md:text-2xl font-bold text-[#f7b731]">30+</div>
@@ -281,26 +213,6 @@ const AboutPage = () => {
                 </h3>
                 <div className="w-24 h-1 bg-[#f7b731] mx-auto rounded-full"></div>
               </div>
-    {/* <div className="text-lg md:text-lg text-[#1a365d] leading-relaxed mb-12">
-  <ul className="list-disc space-y-3 ps-6">
-    <li>استشاري وبروفيسور الطب النفسي في "مركز إدراك للاستشارات الطبية"، المملكة العربية السعودية.</li>
-    <li>استشاري ومدرب في "مركز معرفي".</li>
-    <li>المشرف العام على موقع "النفسي".</li>
-    <li>مؤسس "المجلس السعودي للطب النفسي".</li>
-    <li>مؤسس "كرسي أبحاث وتطبيقات الصحة النفسية" في "جامعة الملك سعود".</li>
-    <li>عضو مؤسس في كلية الطب في جامعة الإمام محمد بن سعود الإسلامية.</li>
-    <li>عضو في "الجمعية الأميركية للأطباء النفسيين".</li>
-    <li>عضو في "الاتحاد الإسلامي للأطباء النفسيين".</li>
-    <li>عضو في "الجمعية السعودية للطب النفسي".</li>
-  </ul>
-</div> */}
-
-
-     
-     
-
-
-
             {/* Professional Positions Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
               {[
@@ -414,55 +326,6 @@ const AboutPage = () => {
 
 
 
-              {/* Timeline - Fully Responsive */}
-              {/* <div className="relative">
-                <h4 className="text-xl md:text-2xl font-bold text-[#1a365d] mb-8 text-center">المسيرة المهنية</h4>
-                
-                <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-[#560CAB] to-[#f7b731] rounded-full"></div>
-                
-                <div className="block md:hidden absolute right-6 top-0 h-full w-1 bg-gradient-to-b from-[#560CAB] to-[#f7b731] rounded-full"></div>
-                
-                <div className="space-y-6 md:space-y-8">
-                  {timeline.map((item, index) => (
-                    <div key={index} className={`relative ${
-                      // Mobile: all items aligned to the left
-                      // Desktop: alternating alignment
-                      index % 2 === 0 
-                        ? 'md:flex md:flex-row-reverse' 
-                        : 'md:flex'
-                    } flex`}>
-                      
-                      <div className="block md:hidden absolute right-6 transform translate-x-1/2 w-4 h-4 bg-white border-4 border-[#560CAB] rounded-full z-10 top-6"></div>
-                      
-                      <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-4 h-4 bg-white border-4 border-[#560CAB] rounded-full z-10 top-6"></div>
-                      
-                      <div className={`w-full md:w-5/12 pr-12 md:pr-0 ${
-                        index % 2 === 0 
-                          ? 'md:text-right md:pr-8' 
-                          : 'md:text-left md:pl-8'
-                      }`}>
-                        <div className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                          <div className="flex items-center space-x-3 rtl:space-x-reverse mb-3 flex-wrap">
-                            <div className={`w-10 h-10 md:w-12 md:h-12 ${item.color} rounded-full flex items-center justify-center flex-shrink-0`}>
-                              <item.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
-                            </div>
-                            <div className="bg-[#f7b731] text-[#1a365d] px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-bold">
-                              {item.year}
-                            </div>
-                          </div>
-                          <h5 className="font-bold text-[#1a365d] mb-2 text-base md:text-lg leading-tight">{item.title}</h5>
-                          <p className="text-gray-600 flex items-start text-sm md:text-base">
-                            <MapPin className="w-4 h-4 ml-2 text-[#560CAB] flex-shrink-0 mt-0.5" />
-                            <span>{item.institution}</span>
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="hidden md:block md:w-5/12"></div>
-                    </div>
-                  ))}
-                </div>
-              </div> */}
             </div>
 
             {/* Qualifications & Achievements */}
@@ -497,7 +360,7 @@ const AboutPage = () => {
                   <div className="flex items-center space-x-4 rtl:space-x-reverse p-4 bg-gray-50 rounded-xl">
                     <BookOpen className="w-6 h-6 md:w-8 md:h-8 text-[#560CAB] flex-shrink-0" />
                     <div>
-                      <p className="font-semibold text-sm md:text-base">+25 بحثاً علمياً منشوراً</p>
+                      <p className="font-semibold text-sm md:text-base">+94  بحثاً علمياً منشوراً</p>
                       <p className="text-xs md:text-sm text-gray-600">في مجالات اضطرابات الأكل والتدخين والأمراض النفسية</p>
                     </div>
                   </div>

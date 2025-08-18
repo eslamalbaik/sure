@@ -38,7 +38,7 @@ const Index = () => {
     <Waypoints className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
     <h3 className="text-xl font-bold mb-2">مسار إدراك</h3>
     <p className="opacity-90 max-w-[400px] mx-auto mb-4">
-      خدمات استشارات طبية "مجانية" لمراجعي البروفيسور عبدالله السبيعي بمركز إدراك للإستشارات الطبية.
+      خدمة استشارات طبية "مجانية" لمراجعي البروفيسور عبدالله السبيعي بمركز إدراك للإستشارات الطبية.
     </p>
     <a
      href="/medical-consultation"
@@ -48,9 +48,9 @@ const Index = () => {
     </a>
   </div>
 
-  <div className="text-center text-white bg-gradient-to-br from-[#560CAB] via-[#1e2635] to-[#1a202c] bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
+  <div id='consultation' className="text-center text-white bg-gradient-to-br from-[#560CAB] via-[#1e2635] to-[#1a202c] bg-white/10 backdrop-blur-lg p-6 rounded-2xl border border-white/20">
     <Users className="w-12 h-12 mx-auto mb-4 text-[#f7b731]" />
-    <h3 className="text-xl font-bold mb-2">مسارات شور</h3>
+    <h3 className="text-xl font-bold mb-2">مسار شور</h3>
     <p className="opacity-90 max-w-[400px] mx-auto mb-4">
 خدمة إستشارية، مدفوعة (غير طبية)،  في مجالات العمل والعلاقات وتحولات الحياة    </p>
     <a

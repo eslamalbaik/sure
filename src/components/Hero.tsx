@@ -21,7 +21,7 @@ const avatars = [
     
   ];
   return (
-    <section id="home" className="bg-gradient-to-br rounded-bl-[85px] rounded-br-[85px]  from-[#560CAB] via-[#1e2635] to-[#1a202c] text-white border-r-[40px] border-l-[40px] border-white py-[50px] lg:py-[80px]" dir="rtl">
+    <section id="home" className="bg-gradient-to-br rounded-bl-[85px] rounded-br-[85px]  from-[#560CAB] via-[#3e0a79] to-[#1a202c] text-white border-r-[40px] border-l-[40px] border-white py-[50px] lg:py-[80px]" dir="rtl">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -52,28 +52,6 @@ const avatars = [
            
               </div>
            <br />
-    {/* <div className="flex items-center gap-4 text-white px-4 py-2 rounded-lg">
-      <div className="relative h-10 w-[120px]"> 
-        {avatars.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt="user"
-            className="w-10 h-10 rounded-full border-2 border-[#560CAB] object-cover absolute"
-            style={{ left: `${i * 24}px`, zIndex: 10 - i }}
-          />
-        ))}
-      </div>
-      <div className="flex items-start justify-start flex-col  gap-2">
-      
-  <span className="text-sm">آلاف المستفيدين يختاروننا</span>
-          <div className='flex flex-row justify-start '>
-             {[...Array(5)].map((_, i) => (
-          <Star key={i} size={16} fill="gold" stroke="gold" />
-        ))}
-        </div>
-      </div>
-    </div> */}
             </div>
 
             <div className="relative">

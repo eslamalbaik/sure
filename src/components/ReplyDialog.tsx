@@ -77,7 +77,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl" dir="rtl">
+      <DialogContent className="max-w-4xl h-[600px]" dir="rtl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Send className="w-5 h-5" />
@@ -121,7 +121,7 @@ const ReplyDialog = ({ consultation, open, onOpenChange }: ReplyDialogProps) => 
                 value={reply}
                 onChange={(e) => setReply(e.target.value)}
                 placeholder={isFollowUp ? 'اكتب رد المتابعة هنا...' : 'اكتب ردك هنا...'}
-                className="min-h-[150px]"
+                className="min-h-[200px]"
                 maxLength={2000}
               />
               <p className="text-sm text-gray-500 text-right">
