@@ -102,30 +102,32 @@ const ConsultationFroms = () => {
     }
   };
 
-  const uploadFilesToSupabase = async (attachments: AttachedFile[]) => {
-    const uploadedFiles = [];
-    
-    for (const attachment of attachments) {
-      const fileName = `${Date.now()}_${attachment.file.name}`;
-      const { data, error } = await supabase.storage
-        .from('consultation-attachments')
-        .upload(fileName, attachment.file);
-      
-      if (error) {
-        console.error('Error uploading file:', error);
-        continue;
-      }
-      
-      uploadedFiles.push({
-        name: attachment.file.name,
-        path: data.path,
-        size: attachment.file.size,
-        type: attachment.file.type
-      });
+const uploadFilesToSupabase = async (attachments: AttachedFile[]) => {
+  const uploadedFiles = [];
+  
+  for (const attachment of attachments) {
+    const safeFileName = encodeURIComponent(attachment.file.name);
+    const fileName = `${Date.now()}_${safeFileName}`;
+
+    const { data, error } = await supabase.storage
+      .from('consultation-attachments')
+      .upload(fileName, attachment.file);
+
+    if (error) {
+      console.error('Error uploading file:', error);
+      continue;
     }
     
-    return uploadedFiles;
-  };
+    uploadedFiles.push({
+      name: attachment.file.name, 
+      path: data.path,
+      size: attachment.file.size,
+      type: attachment.file.type
+    });
+  }
+  
+  return uploadedFiles;
+};
 
   const sendNotification = async (consultationData: any) => {
     try {
