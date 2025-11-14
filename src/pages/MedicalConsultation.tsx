@@ -1,12 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { FileText, Send, Upload, X, File, Image } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Textarea } from '../components/ui/textarea';
-import { useToast } from '../hooks/use-toast';
-import { supabase } from '../integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState, useRef } from "react";
+import { FileText, Send, Upload, X, File, Image } from "lucide-react";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import { Textarea } from "../components/ui/textarea";
+import { useToast } from "../hooks/use-toast";
+import { supabase } from "../integrations/supabase/client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface AttachedFile {
   file: File;
@@ -18,14 +18,14 @@ const MedicalConsultation = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    fileNumber: '',
-    mobile: '',
-    question: '',
-    lastVisit: '',
+    name: "",
+    email: "",
+    fileNumber: "",
+    mobile: "",
+    question: "",
+    lastVisit: "",
   });
 
   const [attachments, setAttachments] = useState<AttachedFile[]>([]);
@@ -34,23 +34,30 @@ const MedicalConsultation = () => {
     if (!files) return;
 
     const newFiles: AttachedFile[] = [];
-    
+
     Array.from(files).forEach((file) => {
       if (file.size > 10 * 1024 * 1024) {
         toast({
           title: "حجم الملف كبير جداً",
           description: "يجب أن يكون حجم الملف أقل من 10 ميجابايت",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
 
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ];
       if (!allowedTypes.includes(file.type)) {
         toast({
           title: "نوع ملف غير مدعوم",
           description: "يُسمح فقط بملفات الصور وPDF وWord",
-          variant: "destructive"
+          variant: "destructive",
         });
         return;
       }
@@ -58,97 +65,107 @@ const MedicalConsultation = () => {
       const fileId = Math.random().toString(36).substr(2, 9);
       const attachedFile: AttachedFile = {
         file,
-        id: fileId
+        id: fileId,
       };
 
-      if (file.type.startsWith('image/')) {
+      if (file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = (e) => {
           attachedFile.preview = e.target?.result as string;
-          setAttachments(prev => [...prev, attachedFile]);
+          setAttachments((prev) => [...prev, attachedFile]);
         };
         reader.readAsDataURL(file);
       } else {
-        setAttachments(prev => [...prev, attachedFile]);
+        setAttachments((prev) => [...prev, attachedFile]);
       }
     });
   };
 
   const removeAttachment = (fileId: string) => {
-    setAttachments(prev => prev.filter(file => file.id !== fileId));
+    setAttachments((prev) => prev.filter((file) => file.id !== fileId));
   };
 
   const uploadFilesToSupabase = async (attachments: AttachedFile[]) => {
     const uploadedFiles = [];
-    
+
     for (const attachment of attachments) {
       const fileName = `${Date.now()}_${attachment.file.name}`;
-      const { data, error } = await supabase.storage
-        .from('consultation-attachments')
-        .upload(fileName, attachment.file);
-      
+      const { data, error } = await supabase.storage.from("consultation-attachments").upload(fileName, attachment.file);
+
       if (error) {
-        console.error('Error uploading file:', error);
+        console.error("Error uploading file:", error);
         continue;
       }
-      
+
       uploadedFiles.push({
         name: attachment.file.name,
         path: data.path,
         size: attachment.file.size,
-        type: attachment.file.type
+        type: attachment.file.type,
       });
     }
-    
+
     return uploadedFiles;
   };
 
   const sendNotification = async (consultationData: any) => {
     try {
-      await supabase.functions.invoke('send-notification', {
-        body: consultationData
+      await supabase.functions.invoke("send-notification", {
+        body: consultationData,
       });
     } catch (error) {
-      console.error('Error sending notification:', error);
+      console.error("Error sending notification:", error);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
+      // الخطوة 1: ارفع الملفات لـ Supabase (زي ما هي عندك)
       const uploadedFiles = await uploadFilesToSupabase(attachments);
-      
-      const consultationData = {
+
+      // الخطوة 2: هات الـ Public URLs للملفات دي
+      const attachmentUrls = uploadedFiles.map((file) => {
+        const { data } = supabase.storage.from("consultation-attachments").getPublicUrl(file.path);
+        return data.publicUrl;
+      });
+
+      // الخطوة 3: جهّز الداتا اللي هتتبعت
+      const dataForApi = {
         name: formData.name,
         email: formData.email,
-        consultation_type: 'medical',
-        message: `رقم الملف: ${formData.fileNumber}\nتاريخ آخر زيارة: ${formData.lastVisit}\nرقم الجوال: ${formData.mobile}\n\nالاستشارة: ${formData.question}`,
-        attachments: uploadedFiles
+        fileNumber: formData.fileNumber,
+        mobile: formData.mobile,
+        question: formData.question,
+        lastVisit: formData.lastVisit,
+        attachmentUrls: attachmentUrls, // ابعت مصفوفة الروابط
       };
 
-      const { error } = await supabase
-        .from('consultations')
-        .insert(consultationData);
+      // الخطوة 4: نادي الـ Supabase Function بتاعتك
+      const { data, error } = await supabase.functions.invoke("submit-to-zoho", {
+        body: dataForApi,
+      });
 
-      if (error) throw error;
+      if (error) {
+        throw new Error(error.message || "Failed to submit to Supabase Function");
+      }
 
-      await sendNotification(consultationData);
-
+      // الخطوة 5: اظهر رسالة النجاح وفضّي الفورم
       toast({
         title: "تم إرسال الاستشارة بنجاح",
-        description: "سيتم التواصل معك في أقرب وقت ممكن"
+        description: "سيتم التواصل معك في أقرب وقت ممكن",
       });
-      
-      setFormData({ name: '', email: '', fileNumber: '', mobile: '', question: '', lastVisit: '' });
+
+      setFormData({ name: "", email: "", fileNumber: "", mobile: "", question: "", lastVisit: "" });
       setAttachments([]);
-    } catch (error) {
-      console.error('Error submitting consultation:', error);
+    } catch (error: any) {
+      console.error("Error submitting consultation:", error);
       toast({
         title: "خطأ في الإرسال",
-        description: "حدث خطأ أثناء إرسال الاستشارة. يرجى المحاولة مرة أخرى.",
-        variant: "destructive"
+        description: `حدث خطأ: ${error.message || "يرجى المحاولة مرة أخرى."}`,
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
@@ -157,10 +174,8 @@ const MedicalConsultation = () => {
 
   const FileAttachmentSection = () => (
     <div className="space-y-4">
-      <Label className="text-lg font-semibold text-[#1a365d]">
-        إرفاق ملفات أو صور (اختياري)
-      </Label>
-      
+      <Label className="text-lg font-semibold text-[#1a365d]">إرفاق ملفات أو صور (اختياري)</Label>
+
       <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#1a365d] transition-colors">
         <input
           ref={fileInputRef}
@@ -170,7 +185,7 @@ const MedicalConsultation = () => {
           onChange={(e) => handleFileUpload(e.target.files)}
           className="hidden"
         />
-        
+
         <div className="space-y-3">
           <Upload className="w-12 h-12 text-gray-400 mx-auto" />
           <div>
@@ -184,9 +199,7 @@ const MedicalConsultation = () => {
               اختر الملفات
             </Button>
           </div>
-          <p className="text-sm text-gray-500">
-            يُسمح بملفات الصور وPDF وWord (حد أقصى 10 ميجابايت لكل ملف)
-          </p>
+          <p className="text-sm text-gray-500">يُسمح بملفات الصور وPDF وWord (حد أقصى 10 ميجابايت لكل ملف)</p>
         </div>
       </div>
 
@@ -198,8 +211,8 @@ const MedicalConsultation = () => {
               <div key={attachment.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg border">
                 <div className="flex-shrink-0">
                   {attachment.preview ? (
-                    <img 
-                      src={attachment.preview} 
+                    <img
+                      src={attachment.preview}
                       alt={attachment.file.name}
                       className="w-12 h-12 object-cover rounded"
                     />
@@ -209,16 +222,12 @@ const MedicalConsultation = () => {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {attachment.file.name}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {(attachment.file.size / 1024 / 1024).toFixed(2)} ميجابايت
-                  </p>
+                  <p className="text-sm font-medium text-gray-900 truncate">{attachment.file.name}</p>
+                  <p className="text-xs text-gray-500">{(attachment.file.size / 1024 / 1024).toFixed(2)} ميجابايت</p>
                 </div>
-                
+
                 <Button
                   type="button"
                   variant="ghost"
@@ -241,9 +250,7 @@ const MedicalConsultation = () => {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-[#1a365d] mb-6">
-              قسم الاستشارات الطبية "إدراك"
-            </h2>
+            <h2 className="text-4xl font-bold text-[#1a365d] mb-6">قسم الاستشارات الطبية "إدراك"</h2>
             <p className="text-xl text-gray-700 max-w-3xl mx-auto leading-relaxed">
               استشارات طبية خاصة بمراجعي البروفيسور عبدالله السبيعي
             </p>
@@ -371,7 +378,7 @@ const MedicalConsultation = () => {
                   className="w-full bg-[#1a365d] hover:bg-[#1a365d]/90 h-16 text-xl font-bold rounded-xl shadow-lg hover:shadow-xl transition-all"
                 >
                   <Send className="w-6 h-6 mr-3" />
-                  {isSubmitting ? 'جاري إرسال الاستشارة...' : 'إرسال الاستشارة الطبية'}
+                  {isSubmitting ? "جاري إرسال الاستشارة..." : "إرسال الاستشارة الطبية"}
                 </Button>
               </form>
             </CardContent>
