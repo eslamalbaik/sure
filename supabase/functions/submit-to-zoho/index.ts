@@ -5,72 +5,83 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-async function getZohoAccessToken() {
-  const ZOHO_CLIENT_ID = "1000.S2IMTRW1R3TUZ2VK2GYHGCSMCWD9CN";
-  const ZOHO_CLIENT_SECRET = "86a6675006543af63597850f462996d85728485326";
-  const ZOHO_REFRESH_TOKEN = "1000.0944ec97354197ca5ea96cc64a40ac8b.b761659b74107c3fa9c3d695673e3e2e";
-
-  const response = await fetch("https://accounts.zoho.com/oauth/v2/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "refresh_token",
-      refresh_token: ZOHO_REFRESH_TOKEN!,
-      client_id: ZOHO_CLIENT_ID!,
-      client_secret: ZOHO_CLIENT_SECRET!,
-    }),
-  });
-
-  const data = await response.json();
-  if (data.error) throw new Error(`Zoho auth error: ${data.error}`);
-  return data.access_token;
-}
-
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const accessToken = await getZohoAccessToken();
-
     const { name, email, fileNumber, mobile, question, lastVisit, attachmentUrls } = await req.json();
 
-    const ATTACHMENTS_FIELD_ALIAS = "AttachmentsLinks";
-    const ZOHO_FORM_LINK_NAME = "medical";
+    console.log(
+      "📥 Received data:",
+      JSON.stringify({ name, email, fileNumber, mobile, question, lastVisit, attachmentUrls }, null, 2)
+    );
 
-    const zohoData = {
-      Name: name,
+    const ZOHO_ACTION_URL = "https://crm.zoho.com/crm/WebToLeadForm";
+    const ZOHO_XNQSJSDP = "e61e4a39d0716797531efaff40c744c5fd75fc2c1af8f69503b1482195a095e5";
+    const ZOHO_XMLWTLD =
+      "e98ccde8d1d67834250744ce4897a15058d3d09c6050285688a2863753878a0f222191003764f0a3c94ab5ee32c4f8c4";
+    const ZOHO_ACTION_TYPE = "TGVhZHM=";
+
+    const fullDescription = `الاستشارة: ${question}
+
+--- تفاصيل إضافية ---
+رقم الملف: ${fileNumber}
+تاريخ آخر زيارة: ${lastVisit}
+
+روابط المرفقات:
+${attachmentUrls && attachmentUrls.length > 0 ? attachmentUrls.join("\n") : "لا توجد مرفقات"}`;
+
+    const formData = new URLSearchParams();
+    formData.append("xnQsjsdp", ZOHO_XNQSJSDP);
+    formData.append("zc_gad", "");
+    formData.append("xmIwtLD", ZOHO_XMLWTLD);
+    formData.append("actionType", ZOHO_ACTION_TYPE);
+    formData.append("returnURL", "null");
+    formData.append("Email", email || "");
+    formData.append("Mobile", mobile || "");
+    formData.append("First Name", "");
+    formData.append("Company", "Medical Consultation");
+    formData.append("Last Name", name || "");
+    formData.append("Description", fullDescription);
+    formData.append("aG9uZXlwb3Q", "");
+
+    console.log("📤 Sending to Zoho WebToLeadForm:", {
+      "Last Name": name,
       Email: email,
-      FileNumber: fileNumber,
-      Phone: mobile,
-      LastVisit: lastVisit,
-      Question: question,
-      [ATTACHMENTS_FIELD_ALIAS]: attachmentUrls.join("\n"),
-    };
+      Mobile: mobile,
+      Company: "Medical Consultation",
+    });
 
-    const zohoApiEndpoint = `https://forms.zoho.com/api/v2/forms/${ZOHO_FORM_LINK_NAME}/submissions`;
-
-    const zohoResponse = await fetch(zohoApiEndpoint, {
+    const zohoResponse = await fetch(ZOHO_ACTION_URL, {
       method: "POST",
       headers: {
-        Authorization: `Zoho-oauthtoken ${accessToken}`,
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify({ data: zohoData }),
+      body: formData.toString(),
     });
 
-    const zohoResult = await zohoResponse.json();
+    const responseText = await zohoResponse.text();
+    console.log("📥 Zoho Response Status:", zohoResponse.status);
+    console.log("📥 Zoho Response Text:", responseText.substring(0, 500));
 
-    if (zohoResult.code && zohoResult.code !== 3000) {
-      throw new Error(`Zoho API Error: ${zohoResult.message}`);
+    if (zohoResponse.ok || zohoResponse.status === 200) {
+      console.log("✅ Success! Data submitted to Zoho CRM");
+      return new Response(
+        JSON.stringify({
+          message: "Submission to Zoho CRM successful",
+          status: zohoResponse.status,
+          response: responseText.substring(0, 200),
+        }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    } else {
+      throw new Error(`Zoho CRM Error: ${zohoResponse.status} - ${responseText.substring(0, 200)}`);
     }
-
-    return new Response(JSON.stringify({ message: "Submission to Zoho successful", zohoResult }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
   } catch (error: any) {
-    return new Response(JSON.stringify({ message: "Error submitting to Zoho", error: error.message }), {
+    console.error("❌ Error:", error);
+    return new Response(JSON.stringify({ message: "Error submitting to Zoho CRM", error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

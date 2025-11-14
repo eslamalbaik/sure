@@ -123,16 +123,12 @@ const MedicalConsultation = () => {
     setIsSubmitting(true);
 
     try {
-      // الخطوة 1: ارفع الملفات لـ Supabase (زي ما هي عندك)
       const uploadedFiles = await uploadFilesToSupabase(attachments);
-
-      // الخطوة 2: هات الـ Public URLs للملفات دي
       const attachmentUrls = uploadedFiles.map((file) => {
         const { data } = supabase.storage.from("consultation-attachments").getPublicUrl(file.path);
         return data.publicUrl;
       });
 
-      // الخطوة 3: جهّز الداتا اللي هتتبعت
       const dataForApi = {
         name: formData.name,
         email: formData.email,
@@ -140,19 +136,22 @@ const MedicalConsultation = () => {
         mobile: formData.mobile,
         question: formData.question,
         lastVisit: formData.lastVisit,
-        attachmentUrls: attachmentUrls, // ابعت مصفوفة الروابط
+        attachmentUrls: attachmentUrls || [],
       };
 
-      // الخطوة 4: نادي الـ Supabase Function بتاعتك
+      console.log("📤 Sending data to Supabase Function:", dataForApi);
+
       const { data, error } = await supabase.functions.invoke("submit-to-zoho", {
         body: dataForApi,
       });
 
       if (error) {
-        throw new Error(error.message || "Failed to submit to Supabase Function");
+        console.error("❌ Supabase Function Error:", error);
+        throw new Error(error.message || "Failed to submit to Zoho CRM");
       }
 
-      // الخطوة 5: اظهر رسالة النجاح وفضّي الفورم
+      console.log("✅ Success response from Supabase Function:", data);
+
       toast({
         title: "تم إرسال الاستشارة بنجاح",
         description: "سيتم التواصل معك في أقرب وقت ممكن",
@@ -160,14 +159,14 @@ const MedicalConsultation = () => {
 
       setFormData({ name: "", email: "", fileNumber: "", mobile: "", question: "", lastVisit: "" });
       setAttachments([]);
+      setIsSubmitting(false);
     } catch (error: any) {
-      console.error("Error submitting consultation:", error);
+      console.error("❌ Error submitting consultation:", error);
       toast({
         title: "خطأ في الإرسال",
         description: `حدث خطأ: ${error.message || "يرجى المحاولة مرة أخرى."}`,
         variant: "destructive",
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
