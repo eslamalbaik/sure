@@ -140,17 +140,33 @@ const MedicalConsultation = () => {
       };
 
       console.log("📤 Sending data to Supabase Function:", dataForApi);
+      console.log("🔗 Function name: submit-to-zoho");
+      console.log("🔗 Supabase URL:", supabase.supabaseUrl);
 
-      const { data, error } = await supabase.functions.invoke("submit-to-zoho", {
-        body: dataForApi,
-      });
+      try {
+        const { data, error } = await supabase.functions.invoke("submit-to-zoho", {
+          body: dataForApi,
+        });
 
-      if (error) {
-        console.error("❌ Supabase Function Error:", error);
-        throw new Error(error.message || "Failed to submit to Zoho CRM");
+        console.log("📥 Response received:", { data, error });
+
+        if (error) {
+          console.error("❌ Supabase Function Error:", error);
+          console.error("❌ Error details:", JSON.stringify(error, null, 2));
+
+          // رسالة خطأ أكثر وضوحاً
+          if (error.message?.includes("Failed to send")) {
+            throw new Error("الدالة غير منشورة أو غير متاحة. يرجى التحقق من نشر الدالة في Supabase.");
+          }
+
+          throw new Error(error.message || "Failed to submit to Zoho CRM");
+        }
+
+        console.log("✅ Success response from Supabase Function:", data);
+      } catch (invokeError: any) {
+        console.error("❌ Error invoking function:", invokeError);
+        throw invokeError;
       }
-
-      console.log("✅ Success response from Supabase Function:", data);
 
       toast({
         title: "تم إرسال الاستشارة بنجاح",
