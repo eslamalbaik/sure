@@ -7,6 +7,7 @@ import { Textarea } from '../components/ui/textarea';
 import { useToast } from '../hooks/use-toast';
 import { supabase } from '../integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { submitToZoho, ZohoFormData } from '../utils/zohoApi';
 
 interface AttachedFile {
   file: File;
@@ -128,11 +129,62 @@ const MedicalConsultation = () => {
         attachments: uploadedFiles
       };
 
+      // Submit to Supabase
       const { error } = await supabase
         .from('consultations')
         .insert(consultationData);
 
       if (error) throw error;
+
+      // Submit to Zoho CRM
+      try {
+        // إنشاء روابط الملفات المرفقة
+        const attachments = [];
+        if (uploadedFiles.length > 0) {
+          for (const file of uploadedFiles) {
+            const { data: urlData } = supabase.storage
+              .from('consultation-attachments')
+              .getPublicUrl(file.path);
+            attachments.push({
+              name: file.name,
+              url: urlData.publicUrl,
+              path: file.path,
+              size: file.size,
+              type: file.type
+            });
+          }
+        }
+
+        const fullMessage = `رقم الملف: ${formData.fileNumber}\nتاريخ آخر زيارة: ${formData.lastVisit}\nرقم الجوال: ${formData.mobile}\n\nالاستشارة:\n${formData.question}`;
+        
+        const zohoFormData: ZohoFormData = {
+          name: formData.name,
+          email: formData.email,
+          mobile: formData.mobile,
+          phone: formData.mobile, // إضافة phone للتأكد
+          message: fullMessage,
+          module: 'Leads',
+          leadSource: 'Medical Consultation - Website',
+          fileNumber: formData.fileNumber,
+          attachments: attachments,
+          customFields: {
+            // الحقول المخصصة - أسماء API الفعلية من Zoho CRM
+            field1: 'طبية', // Consultation Type
+            field: formData.lastVisit, // تاريخ آخر زيارة (datetime)
+            field2: formData.mobile, // الجوال (حقل مخصص)
+            field4: formData.fileNumber, // رقم الملف
+            field3: formData.question, // تفاصيل الاستشارة
+            Status: 'في الانتظار'
+          }
+        };
+
+        await submitToZoho(zohoFormData);
+        console.log('✅ Successfully submitted to Zoho CRM');
+      } catch (zohoError) {
+        // Log Zoho error but don't fail the whole submission
+        console.error('⚠️ Error submitting to Zoho (continuing anyway):', zohoError);
+        // You can optionally show a warning toast here if needed
+      }
 
       await sendNotification(consultationData);
 

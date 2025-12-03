@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import shorLogo from '/logo-removebg-preview (4).png'
+import shorLogo from '/assets/logonew.png'
 
 
 const AboutShor = () => {

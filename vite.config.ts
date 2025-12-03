@@ -19,4 +19,6 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  // Copy .htaccess to dist folder for cPanel deployment
+  publicDir: 'public',
 }));

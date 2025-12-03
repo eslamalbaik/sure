@@ -6,6 +6,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { useToast } from '../hooks/use-toast';
 import { supabase } from '../integrations/supabase/client';
+import { submitToZoho, ZohoFormData } from '../utils/zohoApi';
 
 interface AttachedFile {
   file: File;
@@ -124,11 +125,56 @@ const PersonalConsultation = () => {
         attachments: uploadedFiles
       };
 
+      // Submit to Supabase
       const { error } = await supabase
         .from('consultations')
         .insert(consultationData);
 
       if (error) throw error;
+
+      // Submit to Zoho CRM
+      try {
+        // إنشاء روابط الملفات المرفقة
+        const attachments = [];
+        if (uploadedFiles.length > 0) {
+          for (const file of uploadedFiles) {
+            const { data: urlData } = supabase.storage
+              .from('consultation-attachments')
+              .getPublicUrl(file.path);
+            attachments.push({
+              name: file.name,
+              url: urlData.publicUrl,
+              path: file.path,
+              size: file.size,
+              type: file.type
+            });
+          }
+        }
+
+        const fullMessage = `${newClientForm.question}`;
+        
+        const zohoFormData: ZohoFormData = {
+          name: newClientForm.name,
+          email: newClientForm.email,
+          message: fullMessage,
+          module: 'Leads',
+          leadSource: 'Personal Consultation - Website',
+          attachments: attachments,
+          customFields: {
+            // الحقول المخصصة - أسماء API الفعلية من Zoho CRM
+            field1: 'شخصية', // Consultation Type
+            field3: newClientForm.question, // تفاصيل الاستشارة
+            Status: 'في الانتظار'
+          }
+        };
+
+        await submitToZoho(zohoFormData);
+        console.log('✅ Successfully submitted to Zoho CRM');
+      } catch (zohoError) {
+        // Log Zoho error but don't fail the whole submission
+        console.error('⚠️ Error submitting to Zoho (continuing anyway):', zohoError);
+        // You can optionally show a warning toast here if needed
+      }
 
       await sendNotification(consultationData);
 

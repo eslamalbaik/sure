@@ -1,5 +1,5 @@
 import { Menu, X, Mail , ChevronDown, ChevronUp } from 'lucide-react';
-import logo from '/logo-removebg-preview (4).png';
+import logo from '/assets/logonew.png';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -45,7 +45,7 @@ const Header = () => {
         <div className="flex items-center justify-between gap-8 h-20">
           <a href="/">
             <div className="flex items-center space-x-4 space-x-reverse">
-              <img src={logo} className='lg:w-28 lg:h-14 w-24 h-12' alt="logo website"/>
+              <img src={logo} className='lg:w-40 lg:h-20 w-32 h-16' alt="logo website"/>
             </div>
           </a>
 
